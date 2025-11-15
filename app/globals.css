@@ -3,6 +3,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --blue-primary: #1F5EFF;
+  --green-accent: #00ff88;
 }
 
 @theme inline {
@@ -22,5 +24,410 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Smooth transitions */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Custom scrollbar for projects section */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--blue-primary);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #0d47d1;
+}
+
+/* Hover effects */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Green line glow effect */
+.green-line-glow {
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+}
+
+/* Card tilt effect */
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease;
+}
+
+/* Button hover effects */
+button, .btn {
+  position: relative;
+  overflow: hidden;
+}
+
+button::before, .btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+button:hover::before, .btn:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--blue-primary) 0%, var(--green-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Section divider green line */
+.section-divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--green-accent) 50%, transparent 100%);
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+/* Loading animation */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Responsive font sizes */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.5rem !important;
+  }
+  h2 {
+    font-size: 2rem !important;
+  }
+}
+
+/* Focus states */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: var(--blue-primary);
+}
+
+/* Selection color */
+::selection {
+  background-color: var(--green-accent);
+  color: #000;
+}
+
+::-moz-selection {
+  background-color: var(--green-accent);
+  color: #000;
+}
+
+/* ========================================
+   SUPER DRAMATIC 2D CURSOR-REACTIVE SNAKE LINE
+   ======================================== */
+
+/* Timeline container - EXTENDED HEIGHT */
+.timeline-container {
+  position: relative;
+  min-height: 3000px;
+}
+
+/* Super Snake Line SVG */
+.super-snake-line {
+  pointer-events: none;
+  will-change: transform;
+  z-index: 1;
+}
+
+.super-snake-line path {
+  will-change: d, stroke, stroke-width;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Timeline cards */
+.timeline-card {
+  position: relative;
+  will-change: opacity, transform;
+}
+
+/* Project cards - NO transition here, all in inline styles */
+.project-card {
+  position: relative;
+}
+
+/* Scroll reveal animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Connection dots pulse animation */
+@keyframes dotPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.7;
+  }
+}
+
+/* Ping animation for dot */
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Card reveal animation */
+.card-reveal {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-reveal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 133, 0.1), transparent);
+  transition: left 0.7s ease;
+  z-index: 1;
+}
+
+.card-reveal:hover::before {
+  left: 100%;
+}
+
+/* Enhanced glow effects */
+.timeline-card .shadow-2xl {
+  transition: box-shadow 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.timeline-card:hover .shadow-2xl {
+  box-shadow:
+    0 25px 70px -15px rgba(31, 94, 255, 0.25),
+    0 0 50px rgba(0, 255, 133, 0.15),
+    0 10px 30px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Year badge enhanced glow */
+.timeline-card [class*="shadow-green-500"] {
+  transition: all 0.5s ease;
+}
+
+.timeline-card .group:hover [class*="shadow-green-500"] {
+  box-shadow:
+    0 10px 40px rgba(0, 255, 133, 0.5),
+    0 0 30px rgba(0, 255, 133, 0.3);
+  transform: scale(1.05);
+}
+
+/* Mobile: Center cards and show straight line */
+@media (max-width: 1023px) {
+  .timeline-card {
+    justify-content: center !important;
+  }
+
+  .timeline-card > div {
+    width: 100% !important;
+    max-width: 520px;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .timeline-container {
+    min-height: auto;
+  }
+
+  .dynamic-snake-line {
+    display: none !important;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .timeline-card > div {
+    max-width: 640px;
+  }
+}
+
+/* Large desktop: More spacing */
+@media (min-width: 1536px) {
+  .timeline-card > div {
+    width: 40% !important;
+  }
+}
+
+/* Green accent line expansion */
+.timeline-card [class*="h-[3px]"] {
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Icon badge animations */
+.group\/item:hover > div:first-child {
+  box-shadow: 0 8px 20px rgba(31, 94, 255, 0.3);
+}
+
+/* Investment value scale */
+.timeline-card .bg-gradient-to-r.from-blue-600 {
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.timeline-card .group:hover .bg-gradient-to-r.from-blue-600 {
+  transform: scale(1.08);
+}
+
+/* Completion badge animation */
+.timeline-card [class*="border-green-200"] {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 255, 133, 0.1);
+}
+
+.timeline-card .group:hover [class*="border-green-200"] {
+  border-color: rgb(74, 222, 128);
+  box-shadow:
+    0 4px 15px rgba(0, 255, 133, 0.3),
+    0 0 20px rgba(0, 255, 133, 0.2);
+}
+
+/* Smooth gradient background transition */
+.timeline-card [class*="bg-gradient-to-br"] {
+  transition: background 0.5s ease;
+}
+
+/* Performance optimizations */
+.timeline-card,
+.dynamic-snake-line path,
+.card-reveal {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Safari smooth rendering */
+@media not all and (min-resolution:.001dpcm) {
+  @supports (-webkit-appearance:none) {
+    .dynamic-snake-line path {
+      transform: translateZ(0);
+    }
+  }
 }
