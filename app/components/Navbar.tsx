@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import { useLanguage } from '../context/LanguageContext';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { language, toggleLanguage, t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,11 +20,11 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Technology', href: '#technology' },
-    { name: 'About Us', href: '#about' },
-    { name: 'Contact', href: '#contact' },
+    { name: t.nav.home, href: '#home' },
+    { name: t.nav.projects, href: '#projects' },
+    { name: t.nav.technology, href: '#technology' },
+    { name: t.nav.about, href: '#about' },
+    { name: t.nav.contact, href: '#contact' },
   ];
 
   return (
@@ -51,9 +53,9 @@ const Navbar = () => {
             <Image
               src="/rasimramalogo.png"
               alt="Rama Rasim Logo"
-              width={400}
-              height={100}
-              className="h-20 lg:h-24 w-auto"
+              width={480}
+              height={120}
+              className="h-24 lg:h-28 w-auto"
               priority
             />
           </motion.div>
@@ -82,15 +84,22 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* CTA Button - Far Right */}
+          {/* Language Toggle & CTA Button - Far Right */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.8, ease: 'easeOut' }}
-            className="hidden lg:block"
+            className="hidden lg:flex items-center space-x-4"
           >
+            <button
+              onClick={toggleLanguage}
+              className="relative px-4 py-2 text-white font-bold text-sm tracking-wide border-2 border-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105"
+            >
+              <span className="relative z-10">{language === 'en' ? 'SQ' : 'EN'}</span>
+              <span className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </button>
             <button className="relative px-8 py-3 text-white font-bold text-sm tracking-wide border-2 border-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105">
-              <span className="relative z-10">Request Proposal</span>
+              <span className="relative z-10">{t.nav.requestProposal}</span>
               <span className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <span className="absolute inset-0 blur-xl bg-white/30" />
@@ -165,14 +174,25 @@ const Navbar = () => {
                   </motion.a>
                 ))}
 
-                {/* Mobile CTA Button */}
+                {/* Mobile Language Toggle */}
                 <motion.button
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: 0.5 }}
-                  className="mt-6 w-full px-8 py-4 text-white font-bold text-sm tracking-wide border-2 border-white rounded-lg hover:bg-white/10 transition-all duration-300"
+                  onClick={toggleLanguage}
+                  className="mt-2 w-full px-8 py-3 text-white font-bold text-sm tracking-wide border-2 border-white rounded-lg hover:bg-white/10 transition-all duration-300"
                 >
-                  Request Proposal
+                  {language === 'en' ? 'Shqip (SQ)' : 'English (EN)'}
+                </motion.button>
+
+                {/* Mobile CTA Button */}
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.6 }}
+                  className="w-full px-8 py-4 text-white font-bold text-sm tracking-wide border-2 border-white rounded-lg hover:bg-white/10 transition-all duration-300"
+                >
+                  {t.nav.requestProposal}
                 </motion.button>
               </div>
             </motion.div>
