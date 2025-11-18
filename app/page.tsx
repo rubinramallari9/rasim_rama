@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from './context/LanguageContext';
 
 // Dynamic Timeline with DOM-Position-Driven Snake Line
-function DynamicTimeline() {
+function DynamicTimeline() { 
   const { t } = useLanguage();
   const [svgPath, setSvgPath] = useState('');
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
@@ -95,7 +95,7 @@ function DynamicTimeline() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Smooth mouse interpolation
+   // Smooth mouse interpolation
   useEffect(() => {
     const smoothing = 0.1;
 
