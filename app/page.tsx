@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from './context/LanguageContext';
+import Link from 'next/link';
 
 // Dynamic Timeline with DOM-Position-Driven Snake Line
 function DynamicTimeline() { 
@@ -15,11 +16,11 @@ function DynamicTimeline() {
   const rafRef = useRef<number | undefined>(undefined);
 
   const projects = [
-    { name: 'Danube Power Station', location: 'Austria', capacity: '180 MW', year: '2023', investment: '$450M' },
-    { name: 'Alpine Hydro Complex', location: 'Switzerland', capacity: '250 MW', year: '2022', investment: '$620M' },
-    { name: 'Nordic Flow Project', location: 'Norway', capacity: '320 MW', year: '2021', investment: '$780M' },
-    { name: 'Balkan Energy Hub', location: 'Albania', capacity: '150 MW', year: '2023', investment: '$380M' },
-    { name: 'Rhine Valley Station', location: 'Germany', capacity: '200 MW', year: '2022', investment: '$510M' },
+    { id: 1, name: 'Danube Power Station', location: 'Austria', capacity: '180 MW', year: '2023', investment: '$450M' },
+    { id: 2, name: 'Alpine Hydro Complex', location: 'Switzerland', capacity: '250 MW', year: '2022', investment: '$620M' },
+    { id: 3, name: 'Nordic Flow Project', location: 'Norway', capacity: '320 MW', year: '2021', investment: '$780M' },
+    { id: 4, name: 'Balkan Energy Hub', location: 'Albania', capacity: '150 MW', year: '2023', investment: '$380M' },
+    { id: 5, name: 'Rhine Valley Station', location: 'Germany', capacity: '200 MW', year: '2022', investment: '$510M' },
   ];
 
   // Generate organic snake path from actual DOM card positions
@@ -257,28 +258,29 @@ function DynamicTimeline() {
             }}
           >
             <div className={`w-full lg:w-[38%] ${index % 2 === 0 ? 'lg:mr-auto lg:pr-24' : 'lg:ml-auto lg:pl-24'}`}>
-              <div className="group relative">
-                {/* Connection Dot - Pulsing */}
-                <div
-                  className="absolute top-1/2 hidden lg:block transform -translate-y-1/2 w-5 h-5 rounded-full z-20"
-                  style={{
-                    [index % 2 === 0 ? 'right' : 'left']: '-2.5rem',
-                    background: 'radial-gradient(circle, #00FF85 0%, #00FF85 40%, transparent 70%)',
-                    boxShadow: '0 0 20px rgba(0, 255, 133, 0.8), 0 0 40px rgba(0, 255, 133, 0.4)',
-                    animation: 'dotPulse 2s ease-in-out infinite',
-                  }}
-                >
+              <Link href={`/projects/${project.id}`}>
+                <div className="group relative">
+                  {/* Connection Dot - Pulsing */}
                   <div
-                    className="absolute inset-0 rounded-full"
+                    className="absolute top-1/2 hidden lg:block transform -translate-y-1/2 w-5 h-5 rounded-full z-20"
                     style={{
-                      background: '#00FF85',
-                      animation: 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+                      [index % 2 === 0 ? 'right' : 'left']: '-2.5rem',
+                      background: 'radial-gradient(circle, #00FF85 0%, #00FF85 40%, transparent 70%)',
+                      boxShadow: '0 0 20px rgba(0, 255, 133, 0.8), 0 0 40px rgba(0, 255, 133, 0.4)',
+                      animation: 'dotPulse 2s ease-in-out infinite',
                     }}
-                  ></div>
-                </div>
+                  >
+                    <div
+                      className="absolute inset-0 rounded-full"
+                      style={{
+                        background: '#00FF85',
+                        animation: 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+                      }}
+                    ></div>
+                  </div>
 
-                {/* Card */}
-                <div className="bg-white rounded-3xl overflow-hidden shadow-2xl hover:shadow-green-500/20 transition-all duration-700 hover:scale-[1.03] hover:-translate-y-3 card-reveal">
+                  {/* Card */}
+                  <div className="bg-white rounded-3xl overflow-hidden shadow-2xl hover:shadow-green-500/20 transition-all duration-700 hover:scale-[1.03] hover:-translate-y-3 card-reveal cursor-pointer">
                   {/* Year Badge */}
                   <div className="absolute top-6 right-6 z-30 bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-xl shadow-green-500/30">
                     {project.year}
@@ -350,7 +352,8 @@ function DynamicTimeline() {
                     </div>
                   </div>
                 </div>
-              </div>
+                </div>
+              </Link>
             </div>
           </div>
         ))}
