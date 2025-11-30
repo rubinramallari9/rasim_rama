@@ -66,6 +66,11 @@ const Navbar = () => {
               <motion.a
                 key={link.name}
                 href={link.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const targetId = link.href.replace('#', '');
+                  document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+                }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
@@ -73,7 +78,7 @@ const Navbar = () => {
                   delay: 0.3 + index * 0.1,
                   ease: 'easeOut',
                 }}
-                className="relative text-white font-bold text-sm tracking-wide group"
+                className="relative text-white font-bold text-sm tracking-wide group cursor-pointer"
               >
                 {link.name}
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-white transition-all duration-300 ease-out group-hover:w-full" />
@@ -98,7 +103,10 @@ const Navbar = () => {
               <span className="relative z-10">{language === 'en' ? 'SQ' : 'EN'}</span>
               <span className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </button>
-            <button className="relative px-8 py-3 text-white font-bold text-sm tracking-wide border-2 border-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105">
+            <button
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              className="relative px-8 py-3 text-white font-bold text-sm tracking-wide border-2 border-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105"
+            >
               <span className="relative z-10">{t.nav.requestProposal}</span>
               <span className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -167,8 +175,15 @@ const Navbar = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.1 }}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-white font-bold text-lg tracking-wide py-3 border-b border-white/20 hover:border-white transition-all duration-300"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsMobileMenuOpen(false);
+                      const targetId = link.href.replace('#', '');
+                      setTimeout(() => {
+                        document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+                      }, 300);
+                    }}
+                    className="text-white font-bold text-lg tracking-wide py-3 border-b border-white/20 hover:border-white transition-all duration-300 cursor-pointer"
                   >
                     {link.name}
                   </motion.a>
@@ -190,6 +205,10 @@ const Navbar = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: 0.6 }}
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
                   className="w-full px-8 py-4 text-white font-bold text-sm tracking-wide border-2 border-white rounded-lg hover:bg-white/10 transition-all duration-300"
                 >
                   {t.nav.requestProposal}

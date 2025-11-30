@@ -1,36 +1,47 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useLanguage } from './context/LanguageContext';
 import Link from 'next/link';
+import { getProjects, Project } from './lib/api';
 
 // Dynamic Timeline with DOM-Position-Driven Snake Line
-function DynamicTimeline() { 
+function DynamicTimeline() {
   const { t } = useLanguage();
   const [svgPath, setSvgPath] = useState('');
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
   const [smoothMouse, setSmoothMouse] = useState({ x: 0.5, y: 0.5 });
   const [isVisible, setIsVisible] = useState<boolean[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const rafRef = useRef<number | undefined>(undefined);
 
-  const projects = [
-    { id: 1, name: 'Danube Power Station', location: 'Austria', capacity: '180 MW', year: '2023', investment: '$450M' },
-    { id: 2, name: 'Alpine Hydro Complex', location: 'Switzerland', capacity: '250 MW', year: '2022', investment: '$620M' },
-    { id: 3, name: 'Nordic Flow Project', location: 'Norway', capacity: '320 MW', year: '2021', investment: '$780M' },
-    { id: 4, name: 'Balkan Energy Hub', location: 'Albania', capacity: '150 MW', year: '2023', investment: '$380M' },
-    { id: 5, name: 'Rhine Valley Station', location: 'Germany', capacity: '200 MW', year: '2022', investment: '$510M' },
-  ];
+  // Fetch projects from backend
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const data = await getProjects();
+        setProjects(data);
+        // Initialize visibility array to show all cards immediately
+        setIsVisible(new Array(data.length).fill(true));
+      } catch (error) {
+        console.error('Failed to load projects:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProjects();
+  }, []);
 
   // Generate organic snake path from actual DOM card positions
-  const generatePathFromDOM = () => {
+  const generatePathFromDOM = useCallback(() => {
     if (!containerRef.current || !svgRef.current) return '';
 
     const cards = containerRef.current.querySelectorAll('.project-card');
     if (cards.length === 0) return '';
 
-    const containerRect = containerRef.current.getBoundingClientRect();
     const svgRect = svgRef.current.getBoundingClientRect();
 
     // Get actual card center points
@@ -75,13 +86,13 @@ function DynamicTimeline() {
     }
 
     return path;
-  };
+  }, [smoothMouse]);
 
   // Update path on any change
-  const updatePath = () => {
+  const updatePath = useCallback(() => {
     const newPath = generatePathFromDOM();
     if (newPath) setSvgPath(newPath);
-  };
+  }, [generatePathFromDOM]);
 
   // Mouse tracking
   useEffect(() => {
@@ -134,10 +145,12 @@ function DynamicTimeline() {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [projects]);
 
-  // Scroll reveal
+  // Scroll reveal - re-run when projects load
   useEffect(() => {
+    if (projects.length === 0) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -158,7 +171,7 @@ function DynamicTimeline() {
     cards.forEach((card) => observer.observe(card));
 
     return () => observer.disconnect();
-  }, []);
+  }, [projects]);
 
   return (
     <div className="relative w-full" ref={containerRef}>
@@ -241,7 +254,17 @@ function DynamicTimeline() {
 
       {/* Project Cards Container - WIDE SPACING FOR ORGANIC CURVES */}
       <div className="relative max-w-6xl mx-auto space-y-64 lg:space-y-80 py-20" style={{ zIndex: 10 }}>
-        {projects.map((project, index) => (
+        {loading ? (
+          <div className="text-center py-20">
+            <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-green-400"></div>
+            <p className="mt-4 text-gray-600">Loading projects...</p>
+          </div>
+        ) : projects.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-gray-600">No projects available at the moment.</p>
+          </div>
+        ) : (
+          projects.map((project, index) => (
           <div
             key={index}
             data-index={index}
@@ -281,9 +304,9 @@ function DynamicTimeline() {
 
                   {/* Card */}
                   <div className="bg-white rounded-3xl overflow-hidden shadow-2xl hover:shadow-green-500/20 transition-all duration-700 hover:scale-[1.03] hover:-translate-y-3 card-reveal cursor-pointer">
-                  {/* Year Badge */}
+                  {/* State Badge */}
                   <div className="absolute top-6 right-6 z-30 bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-xl shadow-green-500/30">
-                    {project.year}
+                    {project.state}
                   </div>
 
                   {/* Image Section */}
@@ -331,24 +354,25 @@ function DynamicTimeline() {
                         </div>
                         <div>
                           <div className="text-xs text-gray-500 uppercase tracking-wider font-semibold">{t.projectsSection.capacity}</div>
-                          <div className="font-extrabold text-gray-900 text-base">{project.capacity}</div>
+                          <div className="font-extrabold text-gray-900 text-base">{project.capaticy} MW</div>
                         </div>
                       </div>
                     </div>
 
-                    {/* Investment & Status */}
+                    {/* Description */}
                     <div className="pt-6 border-t-2 border-gray-100">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-1">{t.projectsSection.investment}</div>
-                          <div className="text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
-                            {project.investment}
-                          </div>
-                        </div>
-                        <div className="bg-gradient-to-r from-green-50 to-green-100 text-green-700 px-5 py-2.5 rounded-full text-sm font-bold border-2 border-green-200 group-hover:scale-110 transition-transform duration-300">
-                          {t.projectsSection.completed}
-                        </div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-2">Description</div>
+                      <div className="text-sm text-gray-700 line-clamp-2 mb-4">
+                        {project.description}
                       </div>
+
+                      {/* Learn More Button */}
+                      <button
+                        onClick={() => window.location.href = `/projects/${project.id}`}
+                        className="w-full mt-4 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-cyan-600 hover:shadow-[0_0_25px_rgba(6,182,212,0.6)] transition-all duration-300 hover:scale-[1.02]"
+                      >
+                        Learn More →
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -356,7 +380,8 @@ function DynamicTimeline() {
               </Link>
             </div>
           </div>
-        ))}
+        ))
+        )}
       </div>
     </div>
   );
@@ -365,6 +390,17 @@ function DynamicTimeline() {
 export default function Home() {
   const { t } = useLanguage();
   const heroRef = useRef<HTMLDivElement>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    project_type: 'new_installation',
+    message: '',
+  });
+  const [formStatus, setFormStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({
+    type: null,
+    message: '',
+  });
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -378,10 +414,46 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setFormStatus({ type: null, message: '' });
+
+    const { submitContactMessage } = await import('./lib/api');
+    const result = await submitContactMessage(formData);
+
+    if (result.success) {
+      setFormStatus({
+        type: 'success',
+        message: 'Thank you for your message! We will get back to you soon.',
+      });
+      setFormData({
+        name: '',
+        email: '',
+        project_type: 'new_installation',
+        message: '',
+      });
+    } else {
+      setFormStatus({
+        type: 'error',
+        message: result.error || 'Failed to send message. Please try again.',
+      });
+    }
+
+    setSubmitting(false);
+  };
+
   return (
     <div className="overflow-x-hidden bg-white">
       {/* HERO SECTION */}
-      <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-white overflow-hidden">
+      <section id="home" className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-white overflow-hidden">
         <div className="absolute inset-0 z-0" ref={heroRef}>
           <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-100 rounded-full blur-3xl opacity-30"></div>
           <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-blue-200 rounded-full blur-3xl opacity-20"></div>
@@ -407,10 +479,16 @@ export default function Home() {
               </p>
 
               <div className="flex gap-4">
-                <button className="px-8 py-4 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                <button
+                  onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="px-8 py-4 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                >
                   {t.hero.viewProjects}
                 </button>
-                <button className="px-8 py-4 border-2 border-gray-900 text-gray-900 font-medium rounded-full hover:bg-gray-900 hover:text-white transition-all duration-300">
+                <button
+                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="px-8 py-4 border-2 border-gray-900 text-gray-900 font-medium rounded-full hover:bg-gray-900 hover:text-white transition-all duration-300"
+                >
                   {t.hero.contactUs}
                 </button>
               </div>
@@ -436,7 +514,7 @@ export default function Home() {
       </section>
 
       {/* ABOUT / COMPANY SECTION */}
-      <section className="relative py-32 bg-white">
+      <section id="about" className="relative py-32 bg-white">
         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-green-400 to-transparent"></div>
 
         <div className="container mx-auto px-6 lg:px-20">
@@ -489,7 +567,7 @@ export default function Home() {
       </section>
 
       {/* SERVICES SECTION */}
-      <section className="relative py-32 bg-gradient-to-br from-gray-50 to-blue-50">
+      <section id="services" className="relative py-32 bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-green-400 to-transparent"></div>
 
         <div className="container mx-auto px-6 lg:px-20">
@@ -574,7 +652,7 @@ export default function Home() {
       </section>
 
       {/* PROJECTS SECTION - DYNAMIC SNAKE TIMELINE */}
-      <section className="relative py-32 bg-gradient-to-b from-white via-blue-50 to-white overflow-hidden">
+      <section id="projects" className="relative py-32 bg-gradient-to-b from-white via-blue-50 to-white overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-green-400 to-transparent"></div>
 
         <div className="container mx-auto px-6 lg:px-20 mb-20">
@@ -596,7 +674,7 @@ export default function Home() {
       </section>
 
       {/* TECHNICAL SPECIFICATIONS SECTION */}
-      <section className="relative py-32 bg-gray-900 text-white">
+      <section id="technology" className="relative py-32 bg-gray-900 text-white">
         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-green-400 to-transparent"></div>
 
         <div className="container mx-auto px-6 lg:px-20">
@@ -784,7 +862,7 @@ export default function Home() {
       </section>
 
       {/* CONTACT SECTION */}
-      <section className="relative py-32 bg-blue-600 text-white">
+      <section id="contact" className="relative py-32 bg-blue-600 text-white">
         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-green-400 to-transparent"></div>
 
         <div className="container mx-auto px-6 lg:px-20">
@@ -836,11 +914,27 @@ export default function Home() {
               <div className="h-[2px] w-12 bg-green-400 mb-6"></div>
               <h3 className="text-2xl font-bold mb-6">{t.contactSection.formHeading}</h3>
 
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleSubmit}>
+                {formStatus.type && (
+                  <div
+                    className={`p-4 rounded-lg ${
+                      formStatus.type === 'success'
+                        ? 'bg-green-100 text-green-800 border border-green-300'
+                        : 'bg-red-100 text-red-800 border border-red-300'
+                    }`}
+                  >
+                    {formStatus.message}
+                  </div>
+                )}
+
                 <div>
                   <label className="block text-sm font-medium mb-2">{t.contactSection.nameLabel}</label>
                   <input
                     type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleFormChange}
+                    required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     placeholder={t.contactSection.namePlaceholder}
                   />
@@ -850,6 +944,10 @@ export default function Home() {
                   <label className="block text-sm font-medium mb-2">{t.contactSection.emailLabel}</label>
                   <input
                     type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleFormChange}
+                    required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     placeholder={t.contactSection.emailPlaceholder}
                   />
@@ -857,17 +955,27 @@ export default function Home() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2">{t.contactSection.projectTypeLabel}</label>
-                  <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent">
-                    <option>{t.contactSection.option1}</option>
-                    <option>{t.contactSection.option2}</option>
-                    <option>{t.contactSection.option3}</option>
-                    <option>{t.contactSection.option4}</option>
+                  <select
+                    name="project_type"
+                    value={formData.project_type}
+                    onChange={handleFormChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  >
+                    <option value="new_installation">{t.contactSection.option1}</option>
+                    <option value="turbine_upgrade">{t.contactSection.option2}</option>
+                    <option value="maintenance">{t.contactSection.option3}</option>
+                    <option value="consultation">{t.contactSection.option4}</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium mb-2">{t.contactSection.messageLabel}</label>
                   <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleFormChange}
+                    required
                     rows={4}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     placeholder={t.contactSection.messagePlaceholder}
@@ -876,9 +984,10 @@ export default function Home() {
 
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300"
+                  disabled={submitting}
+                  className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300 disabled:bg-blue-400 disabled:cursor-not-allowed"
                 >
-                  {t.contactSection.sendButton}
+                  {submitting ? 'Sending...' : t.contactSection.sendButton}
                 </button>
               </form>
             </div>
