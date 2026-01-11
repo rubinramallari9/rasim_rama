@@ -2,8 +2,94 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getProject, getProjects, Project } from '../../lib/api';
 import Navbar from '../../components/Navbar';
+
+// Project interface
+interface Project {
+  id: number;
+  name: string;
+  location: string;
+  capaticy: number;
+  state: string;
+  description: string;
+  investment?: number;
+  commissioning_year?: number;
+  river?: string;
+  hydropower_type?: string;
+  turbine_type?: string;
+  number_of_turbines?: number;
+  annual_production?: number;
+  coordinates_lat?: number;
+  coordinates_lng?: number;
+  region?: string;
+  environmental_measures?: string;
+  technology_used?: string;
+  image_url?: string;
+}
+
+// Mock project data (same as in main page)
+const MOCK_PROJECTS: Project[] = [
+  {
+    id: 1,
+    name: "Valbona Hydropower Plant",
+    location: "Valbona Valley, Albania",
+    capaticy: 15.5,
+    state: "Operational",
+    description: "A state-of-the-art run-of-river hydroelectric facility harnessing the pristine waters of the Valbona River in northern Albania.",
+    investment: 42,
+    commissioning_year: 2022,
+    river: "Valbona River",
+    hydropower_type: "Run-of-River",
+    turbine_type: "Francis",
+    number_of_turbines: 2,
+    annual_production: 65,
+    coordinates_lat: 42.4167,
+    coordinates_lng: 19.9167,
+    region: "Kukës County",
+    environmental_measures: "Fish ladders and minimum ecological flow systems installed to protect aquatic ecosystems.",
+    technology_used: "Modern Francis turbines with digital monitoring and control systems for optimal efficiency."
+  },
+  {
+    id: 2,
+    name: "Drin River Complex",
+    location: "Shkodër Region, Albania",
+    capaticy: 28.0,
+    state: "Under Construction",
+    description: "Large-scale hydroelectric project on the Drin River, featuring advanced turbine technology and environmental protection systems.",
+    investment: 85,
+    commissioning_year: 2025,
+    river: "Drin River",
+    hydropower_type: "Storage",
+    turbine_type: "Kaplan",
+    number_of_turbines: 3,
+    annual_production: 140,
+    coordinates_lat: 42.0833,
+    coordinates_lng: 19.5167,
+    region: "Shkodër County",
+    environmental_measures: "Comprehensive environmental impact mitigation including sediment management and habitat restoration.",
+    technology_used: "Variable-speed Kaplan turbines with automated grid synchronization technology."
+  },
+  {
+    id: 3,
+    name: "Osumi Cascade",
+    location: "Skrapar, Albania",
+    capaticy: 12.3,
+    state: "Planning",
+    description: "Cascading hydropower system utilizing the natural elevation changes of the Osumi Canyon for sustainable energy generation.",
+    investment: 35,
+    commissioning_year: 2026,
+    river: "Osumi River",
+    hydropower_type: "Cascade",
+    turbine_type: "Pelton",
+    number_of_turbines: 4,
+    annual_production: 52,
+    coordinates_lat: 40.5833,
+    coordinates_lng: 20.2833,
+    region: "Berat County",
+    environmental_measures: "Minimal water diversion with dedicated environmental flow monitoring systems.",
+    technology_used: "High-efficiency Pelton turbines optimized for high-head applications."
+  }
+];
 
 export default function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const [project, setProject] = useState<Project | null>(null);
@@ -21,12 +107,16 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
 
   const loadProjectData = async (id: number) => {
     setLoading(true);
-    const projectData = await getProject(id);
+
+    // Simulate loading delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // Find project from mock data
+    const projectData = MOCK_PROJECTS.find(p => p.id === id) || null;
     setProject(projectData);
 
     // Load related projects (excluding current one)
-    const allProjects = await getProjects();
-    const related = allProjects
+    const related = MOCK_PROJECTS
       .filter(p => p.id !== id)
       .slice(0, 3);
     setRelatedProjects(related);

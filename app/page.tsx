@@ -3,7 +3,93 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useLanguage } from './context/LanguageContext';
 import Link from 'next/link';
-import { getProjects, Project } from './lib/api';
+
+// Project interface
+interface Project {
+  id: number;
+  name: string;
+  location: string;
+  capaticy: number;
+  state: string;
+  description: string;
+  investment?: number;
+  commissioning_year?: number;
+  river?: string;
+  hydropower_type?: string;
+  turbine_type?: string;
+  number_of_turbines?: number;
+  annual_production?: number;
+  coordinates_lat?: number;
+  coordinates_lng?: number;
+  region?: string;
+  environmental_measures?: string;
+  technology_used?: string;
+  image_url?: string;
+}
+
+// Mock project data
+const MOCK_PROJECTS: Project[] = [
+  {
+    id: 1,
+    name: "Valbona Hydropower Plant",
+    location: "Valbona Valley, Albania",
+    capaticy: 15.5,
+    state: "Operational",
+    description: "A state-of-the-art run-of-river hydroelectric facility harnessing the pristine waters of the Valbona River in northern Albania.",
+    investment: 42,
+    commissioning_year: 2022,
+    river: "Valbona River",
+    hydropower_type: "Run-of-River",
+    turbine_type: "Francis",
+    number_of_turbines: 2,
+    annual_production: 65,
+    coordinates_lat: 42.4167,
+    coordinates_lng: 19.9167,
+    region: "Kukës County",
+    environmental_measures: "Fish ladders and minimum ecological flow systems installed to protect aquatic ecosystems.",
+    technology_used: "Modern Francis turbines with digital monitoring and control systems for optimal efficiency."
+  },
+  {
+    id: 2,
+    name: "Drin River Complex",
+    location: "Shkodër Region, Albania",
+    capaticy: 28.0,
+    state: "Under Construction",
+    description: "Large-scale hydroelectric project on the Drin River, featuring advanced turbine technology and environmental protection systems.",
+    investment: 85,
+    commissioning_year: 2025,
+    river: "Drin River",
+    hydropower_type: "Storage",
+    turbine_type: "Kaplan",
+    number_of_turbines: 3,
+    annual_production: 140,
+    coordinates_lat: 42.0833,
+    coordinates_lng: 19.5167,
+    region: "Shkodër County",
+    environmental_measures: "Comprehensive environmental impact mitigation including sediment management and habitat restoration.",
+    technology_used: "Variable-speed Kaplan turbines with automated grid synchronization technology."
+  },
+  {
+    id: 3,
+    name: "Osumi Cascade",
+    location: "Skrapar, Albania",
+    capaticy: 12.3,
+    state: "Planning",
+    description: "Cascading hydropower system utilizing the natural elevation changes of the Osumi Canyon for sustainable energy generation.",
+    investment: 35,
+    commissioning_year: 2026,
+    river: "Osumi River",
+    hydropower_type: "Cascade",
+    turbine_type: "Pelton",
+    number_of_turbines: 4,
+    annual_production: 52,
+    coordinates_lat: 40.5833,
+    coordinates_lng: 20.2833,
+    region: "Berat County",
+    environmental_measures: "Minimal water diversion with dedicated environmental flow monitoring systems.",
+    technology_used: "High-efficiency Pelton turbines optimized for high-head applications."
+  }
+];
 
 // Dynamic Timeline with DOM-Position-Driven Snake Line
 function DynamicTimeline() {
@@ -18,21 +104,17 @@ function DynamicTimeline() {
   const svgRef = useRef<SVGSVGElement>(null);
   const rafRef = useRef<number | undefined>(undefined);
 
-  // Fetch projects from backend
+  // Load mock projects
   useEffect(() => {
-    async function fetchProjects() {
-      try {
-        const data = await getProjects();
-        setProjects(data);
-        // Initialize visibility array to show all cards immediately
-        setIsVisible(new Array(data.length).fill(true));
-      } catch (error) {
-        console.error('Failed to load projects:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchProjects();
+    // Simulate loading delay for smooth UX
+    const timer = setTimeout(() => {
+      setProjects(MOCK_PROJECTS);
+      // Initialize visibility array to show all cards immediately
+      setIsVisible(new Array(MOCK_PROJECTS.length).fill(true));
+      setLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   // Generate organic snake path from actual DOM card positions
@@ -426,26 +508,22 @@ export default function Home() {
     setSubmitting(true);
     setFormStatus({ type: null, message: '' });
 
-    const { submitContactMessage } = await import('./lib/api');
-    const result = await submitContactMessage(formData);
+    // Simulate form submission
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-    if (result.success) {
-      setFormStatus({
-        type: 'success',
-        message: 'Thank you for your message! We will get back to you soon.',
-      });
-      setFormData({
-        name: '',
-        email: '',
-        project_type: 'new_installation',
-        message: '',
-      });
-    } else {
-      setFormStatus({
-        type: 'error',
-        message: result.error || 'Failed to send message. Please try again.',
-      });
-    }
+    // Log form data to console (for development purposes)
+    console.log('Contact form submitted:', formData);
+
+    setFormStatus({
+      type: 'success',
+      message: 'Thank you for your message! We will get back to you soon.',
+    });
+    setFormData({
+      name: '',
+      email: '',
+      project_type: 'new_installation',
+      message: '',
+    });
 
     setSubmitting(false);
   };
