@@ -628,100 +628,70 @@ export default function Home() {
                 <div className="text-5xl font-bold mb-2">{t.about.stat2}</div>
                 <div className="text-gray-300 font-light">{t.about.stat2Label}</div>
               </div>
-              <div className="bg-white border-2 border-gray-200 p-8 rounded-2xl hover:scale-105 transition-transform duration-300">
-                <div className="h-[2px] w-12 bg-green-400 mb-4"></div>
-                <div className="text-5xl font-bold mb-2 text-gray-900">{t.about.stat3}</div>
-                <div className="text-gray-600 font-light">{t.about.stat3Label}</div>
-              </div>
-              <div className="bg-blue-50 p-8 rounded-2xl hover:scale-105 transition-transform duration-300">
-                <div className="h-[2px] w-12 bg-green-400 mb-4"></div>
-                <div className="text-5xl font-bold mb-2 text-gray-900">{t.about.stat4}</div>
-                <div className="text-gray-600 font-light">{t.about.stat4Label}</div>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SERVICES SECTION */}
-      <section id="services" className="relative py-32 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-green-400 to-transparent"></div>
-
-        <div className="container mx-auto px-6 lg:px-20">
-          <div className="text-center mb-16">
-            <div className="inline-block">
-              <div className="h-[2px] w-20 bg-green-400 mb-4 mx-auto"></div>
-              <h2 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
-                {t.services.heading}
-              </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {t.services.subheading}
-              </p>
-            </div>
+      {/* SERVICES SECTION - Editorial Design */}
+      <section id="services" className="relative py-32 lg:py-40 bg-white">
+        <div className="container mx-auto px-6 lg:px-20 max-w-6xl">
+          {/* Section Header */}
+          <div className="mb-20 lg:mb-32">
+            <p className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-4">{t.services.heading}</p>
+            <h2 className="text-4xl lg:text-5xl xl:text-6xl font-light text-gray-900 max-w-3xl leading-[1.1]">
+              {t.services.subheading}
+            </h2>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Services List */}
+          <div className="border-t border-gray-200">
             {[
               {
+                number: '01',
                 title: t.services.service1Title,
                 description: t.services.service1Desc,
-                icon: '⚡'
               },
               {
+                number: '02',
                 title: t.services.service2Title,
                 description: t.services.service2Desc,
-                icon: '🏗️'
               },
               {
+                number: '03',
                 title: t.services.service3Title,
                 description: t.services.service3Desc,
-                icon: '🌊'
               },
               {
+                number: '04',
                 title: t.services.service4Title,
                 description: t.services.service4Desc,
-                icon: '📊'
-              },
-              {
-                title: t.services.service5Title,
-                description: t.services.service5Desc,
-                icon: '🔌'
-              },
-              {
-                title: t.services.service6Title,
-                description: t.services.service6Desc,
-                icon: '🏛️'
               }
             ].map((service, index) => (
               <div
                 key={index}
-                className="group bg-white p-8 rounded-2xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border border-gray-100"
-                style={{
-                  transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg)',
-                }}
-                onMouseMove={(e) => {
-                  const card = e.currentTarget;
-                  const rect = card.getBoundingClientRect();
-                  const x = e.clientX - rect.left;
-                  const y = e.clientY - rect.top;
-                  const centerX = rect.width / 2;
-                  const centerY = rect.height / 2;
-                  const rotateX = (y - centerY) / 10;
-                  const rotateY = (centerX - x) / 10;
-                  card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
-                }}
+                className="group border-b border-gray-200 py-10 lg:py-14 cursor-pointer transition-colors hover:bg-gray-50"
               >
-                <div className="h-[2px] w-12 bg-green-400 mb-6"></div>
-                <div className="text-4xl mb-4">{service.icon}</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
-                  {service.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {service.description}
-                </p>
+                <div className="grid grid-cols-12 gap-4 items-start">
+                  {/* Number */}
+                  <div className="col-span-2 lg:col-span-1">
+                    <span className="text-sm text-gray-400 font-mono">{service.number}</span>
+                  </div>
+
+                  {/* Title */}
+                  <div className="col-span-10 lg:col-span-5">
+                    <h3 className="text-2xl lg:text-3xl font-medium text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
+                      {service.title}
+                    </h3>
+                  </div>
+
+                  {/* Description */}
+                  <div className="col-span-12 lg:col-span-6 mt-4 lg:mt-0">
+                    <p className="text-gray-500 text-base lg:text-lg leading-relaxed max-w-xl">
+                      {service.description}
+                    </p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
