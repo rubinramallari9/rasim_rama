@@ -577,7 +577,7 @@ export default function Home() {
               <div className="absolute -inset-4 bg-gradient-to-r from-blue-600 to-green-400 rounded-2xl blur-2xl opacity-20"></div>
               <div className="relative rounded-2xl overflow-hidden aspect-[4/3] hover:scale-105 transition-transform duration-500 shadow-2xl">
                 <Image
-                  src="/mainscreenimage.png"
+                  src="/mainscreenimage2.png"
                   alt="Hydropower turbine facility"
                   fill
                   className="object-cover"
@@ -588,12 +588,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-gray-400 rounded-full mt-2"></div>
-          </div>
-        </div>
       </section>
 
       {/* ABOUT / COMPANY SECTION */}
