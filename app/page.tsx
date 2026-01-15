@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from './context/LanguageContext';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -13,42 +13,17 @@ interface Project {
   capaticy: number;
   state: string;
   description: string;
-  investment?: number;
-  commissioning_year?: number;
-  river?: string;
-  hydropower_type?: string;
-  turbine_type?: string;
-  number_of_turbines?: number;
-  annual_production?: number;
-  coordinates_lat?: number;
-  coordinates_lng?: number;
-  region?: string;
-  environmental_measures?: string;
-  technology_used?: string;
-  image_url?: string;
 }
 
-// Mock project data
-const MOCK_PROJECTS: Project[] = [
+// Project data
+const PROJECTS: Project[] = [
   {
     id: 1,
     name: "Valbona Hydropower Plant",
     location: "Valbona Valley, Albania",
     capaticy: 15.5,
     state: "Operational",
-    description: "A state-of-the-art run-of-river hydroelectric facility harnessing the pristine waters of the Valbona River in northern Albania.",
-    investment: 42,
-    commissioning_year: 2022,
-    river: "Valbona River",
-    hydropower_type: "Run-of-River",
-    turbine_type: "Francis",
-    number_of_turbines: 2,
-    annual_production: 65,
-    coordinates_lat: 42.4167,
-    coordinates_lng: 19.9167,
-    region: "Kukës County",
-    environmental_measures: "Fish ladders and minimum ecological flow systems installed to protect aquatic ecosystems.",
-    technology_used: "Modern Francis turbines with digital monitoring and control systems for optimal efficiency."
+    description: "Run-of-river hydroelectric facility harnessing the Valbona River in northern Albania."
   },
   {
     id: 2,
@@ -56,19 +31,7 @@ const MOCK_PROJECTS: Project[] = [
     location: "Shkodër Region, Albania",
     capaticy: 28.0,
     state: "Under Construction",
-    description: "Large-scale hydroelectric project on the Drin River, featuring advanced turbine technology and environmental protection systems.",
-    investment: 85,
-    commissioning_year: 2025,
-    river: "Drin River",
-    hydropower_type: "Storage",
-    turbine_type: "Kaplan",
-    number_of_turbines: 3,
-    annual_production: 140,
-    coordinates_lat: 42.0833,
-    coordinates_lng: 19.5167,
-    region: "Shkodër County",
-    environmental_measures: "Comprehensive environmental impact mitigation including sediment management and habitat restoration.",
-    technology_used: "Variable-speed Kaplan turbines with automated grid synchronization technology."
+    description: "Large-scale hydroelectric project featuring advanced turbine technology."
   },
   {
     id: 3,
@@ -76,403 +39,12 @@ const MOCK_PROJECTS: Project[] = [
     location: "Skrapar, Albania",
     capaticy: 12.3,
     state: "Planning",
-    description: "Cascading hydropower system utilizing the natural elevation changes of the Osumi Canyon for sustainable energy generation.",
-    investment: 35,
-    commissioning_year: 2026,
-    river: "Osumi River",
-    hydropower_type: "Cascade",
-    turbine_type: "Pelton",
-    number_of_turbines: 4,
-    annual_production: 52,
-    coordinates_lat: 40.5833,
-    coordinates_lng: 20.2833,
-    region: "Berat County",
-    environmental_measures: "Minimal water diversion with dedicated environmental flow monitoring systems.",
-    technology_used: "High-efficiency Pelton turbines optimized for high-head applications."
+    description: "Cascading hydropower system utilizing the Osumi Canyon elevation."
   }
 ];
 
-// Dynamic Timeline with DOM-Position-Driven Snake Line
-function DynamicTimeline() {
-  const { t } = useLanguage();
-  const [svgPath, setSvgPath] = useState('');
-  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
-  const [smoothMouse, setSmoothMouse] = useState({ x: 0.5, y: 0.5 });
-  const [isVisible, setIsVisible] = useState<boolean[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
-  const rafRef = useRef<number | undefined>(undefined);
-
-  // Load mock projects
-  useEffect(() => {
-    // Simulate loading delay for smooth UX
-    const timer = setTimeout(() => {
-      setProjects(MOCK_PROJECTS);
-      // Initialize visibility array to show all cards immediately
-      setIsVisible(new Array(MOCK_PROJECTS.length).fill(true));
-      setLoading(false);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Generate organic snake path from actual DOM card positions
-  const generatePathFromDOM = useCallback(() => {
-    if (!containerRef.current || !svgRef.current) return '';
-
-    const cards = containerRef.current.querySelectorAll('.project-card');
-    if (cards.length === 0) return '';
-
-    const svgRect = svgRef.current.getBoundingClientRect();
-
-    // Get actual card center points
-    const points = Array.from(cards).map((card) => {
-      const rect = card.getBoundingClientRect();
-      return {
-        x: rect.left + rect.width / 2 - svgRect.left,
-        y: rect.top + rect.height / 2 - svgRect.top,
-      };
-    });
-
-    if (points.length === 0) return '';
-
-    // Cursor influence
-    const xBias = (smoothMouse.x - 0.5) * 200; // ±100px horizontal shift
-    const yWobble = (smoothMouse.y - 0.5) * 24; // ±12px vertical wobble
-
-    // Build smooth cubic Bézier path
-    let path = `M ${points[0].x + xBias} ${points[0].y + yWobble}`;
-
-    for (let i = 0; i < points.length - 1; i++) {
-      const current = points[i];
-      const next = points[i + 1];
-
-      // Calculate control points for DRAMATIC organic curves
-      const isLeftCard = i % 2 === 0;
-      const curveDistance = Math.abs(next.y - current.y) * 0.6; // Deep curves
-
-      // Horizontal offset for dramatic S-curve
-      const horizontalCurve = isLeftCard ? 150 : -150;
-      const cursorInfluence = xBias * 0.8;
-
-      // Control point 1: Push OUT from current card
-      const cp1x = current.x + horizontalCurve + cursorInfluence;
-      const cp1y = current.y + curveDistance * 0.3 + yWobble;
-
-      // Control point 2: Pull INTO next card from opposite side
-      const cp2x = next.x - horizontalCurve + cursorInfluence;
-      const cp2y = next.y - curveDistance * 0.3 + yWobble;
-
-      path += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${next.x + xBias},${next.y + yWobble}`;
-    }
-
-    return path;
-  }, [smoothMouse]);
-
-  // Update path on any change
-  const updatePath = useCallback(() => {
-    const newPath = generatePathFromDOM();
-    if (newPath) setSvgPath(newPath);
-  }, [generatePathFromDOM]);
-
-  // Mouse tracking
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({
-        x: e.clientX / window.innerWidth,
-        y: e.clientY / window.innerHeight,
-      });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-   // Smooth mouse interpolation
-  useEffect(() => {
-    const smoothing = 0.1;
-
-    const animate = () => {
-      setSmoothMouse((prev) => ({
-        x: prev.x + (mousePos.x - prev.x) * smoothing,
-        y: prev.y + (mousePos.y - prev.y) * smoothing,
-      }));
-      rafRef.current = requestAnimationFrame(animate);
-    };
-
-    rafRef.current = requestAnimationFrame(animate);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, [mousePos]);
-
-  // Update path on mouse, scroll, resize, and initial render
-  useEffect(() => {
-    updatePath();
-  }, [smoothMouse]);
-
-  useEffect(() => {
-    // Initial path generation after cards render
-    const timer = setTimeout(updatePath, 100);
-
-    const handleResize = () => updatePath();
-    const handleScroll = () => updatePath();
-
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [projects]);
-
-  // Scroll reveal - re-run when projects load
-  useEffect(() => {
-    if (projects.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const index = parseInt(entry.target.getAttribute('data-index') || '0');
-          if (entry.isIntersecting) {
-            setIsVisible((prev) => {
-              const newVisible = [...prev];
-              newVisible[index] = true;
-              return newVisible;
-            });
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const cards = document.querySelectorAll('.project-card');
-    cards.forEach((card) => observer.observe(card));
-
-    return () => observer.disconnect();
-  }, [projects]);
-
-  return (
-    <div className="relative w-full" ref={containerRef}>
-      {/* DYNAMIC SVG SNAKE - Positioned absolutely, fills entire container */}
-      <svg
-        ref={svgRef}
-        className="organic-snake-svg absolute inset-0 w-full h-full hidden lg:block pointer-events-none"
-        style={{ zIndex: 5 }}
-      >
-        <defs>
-          {/* Organic gradient */}
-          <linearGradient id="organicGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#00FF85" stopOpacity="0.4" />
-            <stop offset="50%" stopColor="#00FF85" stopOpacity="1" />
-            <stop offset="100%" stopColor="#00FF85" stopOpacity="0.4" />
-          </linearGradient>
-
-          {/* Animated shimmer */}
-          <linearGradient id="shimmer" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0">
-              <animate attributeName="offset" values="-0.3;1" dur="2.5s" repeatCount="indefinite" />
-            </stop>
-            <stop offset="50%" stopColor="#FFFFFF" stopOpacity="0.8">
-              <animate attributeName="offset" values="0;1.3" dur="2.5s" repeatCount="indefinite" />
-            </stop>
-            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0">
-              <animate attributeName="offset" values="0.3;1.6" dur="2.5s" repeatCount="indefinite" />
-            </stop>
-          </linearGradient>
-
-          {/* Glow filter */}
-          <filter id="snakeGlow">
-            <feGaussianBlur stdDeviation="6" result="blur" />
-            <feFlood floodColor="#00FF85" floodOpacity="0.7" />
-            <feComposite in2="blur" operator="in" />
-            <feMerge>
-              <feMergeNode />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        {/* Outer glow halo */}
-        <path
-          d={svgPath}
-          stroke="#00FF85"
-          strokeWidth="14"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          opacity="0.25"
-          style={{ filter: 'blur(10px)' }}
-        />
-
-        {/* Main snake path */}
-        <path
-          d={svgPath}
-          stroke="url(#organicGradient)"
-          strokeWidth="6"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          filter="url(#snakeGlow)"
-        />
-
-        {/* Animated shimmer overlay */}
-        <path
-          d={svgPath}
-          stroke="url(#shimmer)"
-          strokeWidth="4"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          opacity="0.9"
-        />
-      </svg>
-
-      {/* Mobile straight line */}
-      <div className="absolute left-1/2 top-0 bottom-0 w-[3px] bg-gradient-to-b from-transparent via-green-400 to-transparent lg:hidden transform -translate-x-1/2" style={{ zIndex: 1 }}></div>
-
-      {/* Project Cards Container - WIDE SPACING FOR ORGANIC CURVES */}
-      <div className="relative max-w-6xl mx-auto space-y-64 lg:space-y-80 py-20" style={{ zIndex: 10 }}>
-        {loading ? (
-          <div className="text-center py-20">
-            <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-green-400"></div>
-            <p className="mt-4 text-gray-600">Loading projects...</p>
-          </div>
-        ) : projects.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-gray-600">No projects available at the moment.</p>
-          </div>
-        ) : (
-          projects.map((project, index) => (
-          <div
-            key={index}
-            data-index={index}
-            className={`project-card flex items-center ${
-              index % 2 === 0 ? 'lg:justify-start' : 'lg:justify-end'
-            } justify-center`}
-            style={{
-              opacity: isVisible[index] ? 1 : 0,
-              transform: isVisible[index] ? 'translateY(0)' : 'translateY(5rem)',
-              transitionProperty: 'opacity, transform',
-              transitionDuration: '1s, 1s',
-              transitionTimingFunction: 'ease-out, ease-out',
-              transitionDelay: `${index * 0.15}s, ${index * 0.15}s`,
-            }}
-          >
-            <div className={`w-full lg:w-[38%] ${index % 2 === 0 ? 'lg:mr-auto lg:pr-24' : 'lg:ml-auto lg:pl-24'}`}>
-              <Link href={`/projects/${project.id}`}>
-                <div className="group relative">
-                  {/* Connection Dot - Pulsing */}
-                  <div
-                    className="absolute top-1/2 hidden lg:block transform -translate-y-1/2 w-5 h-5 rounded-full z-20"
-                    style={{
-                      [index % 2 === 0 ? 'right' : 'left']: '-2.5rem',
-                      background: 'radial-gradient(circle, #00FF85 0%, #00FF85 40%, transparent 70%)',
-                      boxShadow: '0 0 20px rgba(0, 255, 133, 0.8), 0 0 40px rgba(0, 255, 133, 0.4)',
-                      animation: 'dotPulse 2s ease-in-out infinite',
-                    }}
-                  >
-                    <div
-                      className="absolute inset-0 rounded-full"
-                      style={{
-                        background: '#00FF85',
-                        animation: 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
-                      }}
-                    ></div>
-                  </div>
-
-                  {/* Card */}
-                  <div className="bg-white rounded-3xl overflow-hidden shadow-2xl hover:shadow-green-500/20 transition-all duration-700 hover:scale-[1.03] hover:-translate-y-3 card-reveal cursor-pointer">
-                  {/* State Badge */}
-                  <div className="absolute top-6 right-6 z-30 bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-xl shadow-green-500/30">
-                    {project.state}
-                  </div>
-
-                  {/* Image Section */}
-                  <div className="relative h-72 bg-gradient-to-br from-blue-200 via-blue-400 to-blue-600 overflow-hidden">
-                    <div className="absolute inset-0 flex items-center justify-center text-white text-base font-semibold backdrop-blur-sm bg-black/10">
-                      {project.name}
-                    </div>
-
-                    {/* Hover gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                    {/* Animated glow on hover */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-                         style={{
-                           background: 'radial-gradient(circle at 50% 50%, rgba(0, 255, 133, 0.15), transparent 70%)',
-                         }}
-                    ></div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-8 bg-gradient-to-br from-white to-gray-50">
-                    {/* Green accent line */}
-                    <div className="h-[3px] w-20 bg-gradient-to-r from-green-400 to-green-500 rounded-full mb-5 group-hover:w-32 transition-all duration-500"></div>
-
-                    {/* Title */}
-                    <h3 className="text-3xl font-bold text-gray-900 mb-6 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-green-500 transition-all duration-500">
-                      {project.name}
-                    </h3>
-
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-2 gap-6 mb-6">
-                      <div className="flex items-center gap-3 group/item">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center text-blue-600 text-xl group-hover/item:scale-110 group-hover/item:rotate-6 transition-transform duration-300">
-                          📍
-                        </div>
-                        <div>
-                          <div className="text-xs text-gray-500 uppercase tracking-wider font-semibold">{t.projectsSection.location}</div>
-                          <div className="font-bold text-gray-900 text-base">{project.location}</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3 group/item">
-                        <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl flex items-center justify-center text-green-600 text-xl group-hover/item:scale-110 group-hover/item:rotate-6 transition-transform duration-300">
-                          ⚡
-                        </div>
-                        <div>
-                          <div className="text-xs text-gray-500 uppercase tracking-wider font-semibold">{t.projectsSection.capacity}</div>
-                          <div className="font-extrabold text-gray-900 text-base">{project.capaticy} MW</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Description */}
-                    <div className="pt-6 border-t-2 border-gray-100">
-                      <div className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-2">Description</div>
-                      <div className="text-sm text-gray-700 line-clamp-2 mb-4">
-                        {project.description}
-                      </div>
-
-                      {/* Learn More Button */}
-                      <button
-                        onClick={() => window.location.href = `/projects/${project.id}`}
-                        className="w-full mt-4 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-cyan-600 hover:shadow-[0_0_25px_rgba(6,182,212,0.6)] transition-all duration-300 hover:scale-[1.02]"
-                      >
-                        Learn More →
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                </div>
-              </Link>
-            </div>
-          </div>
-        ))
-        )}
-      </div>
-    </div>
-  );
-}
-
 export default function Home() {
   const { t } = useLanguage();
-  const heroRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -484,18 +56,6 @@ export default function Home() {
     message: '',
   });
   const [submitting, setSubmitting] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrolled = window.scrollY;
-      if (heroRef.current) {
-        heroRef.current.style.transform = `translateY(${scrolled * 0.5}px)`;
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
@@ -509,76 +69,60 @@ export default function Home() {
     setSubmitting(true);
     setFormStatus({ type: null, message: '' });
 
-    // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // Log form data to console (for development purposes)
     console.log('Contact form submitted:', formData);
 
     setFormStatus({
       type: 'success',
-      message: 'Thank you for your message! We will get back to you soon.',
+      message: 'Thank you for your message. We will respond within 24 hours.',
     });
-    setFormData({
-      name: '',
-      email: '',
-      project_type: 'new_installation',
-      message: '',
-    });
-
+    setFormData({ name: '', email: '', project_type: 'new_installation', message: '' });
     setSubmitting(false);
   };
 
   return (
-    <div className="overflow-x-hidden bg-white">
-      {/* HERO SECTION */}
-      <section id="home" className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-white overflow-hidden">
-        <div className="absolute inset-0 z-0" ref={heroRef}>
-          <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-100 rounded-full blur-3xl opacity-30"></div>
-          <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-blue-200 rounded-full blur-3xl opacity-20"></div>
-        </div>
-
-        {/* Green Line Accent */}
-        <div className="absolute top-1/3 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-green-400 to-transparent opacity-60 animate-pulse"></div>
-
-        <div className="container mx-auto px-6 lg:px-20 z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <div className="bg-white">
+      {/* HERO - Clean, Confident, Editorial */}
+      <section id="home" className="min-h-screen flex items-center border-b border-gray-100">
+        <div className="container mx-auto px-6 lg:px-16 xl:px-24 py-24">
+          <div className="grid lg:grid-cols-2 gap-16 xl:gap-24 items-center">
+            {/* Left - Typography */}
             <div className="space-y-8">
-              <div className="space-y-4">
-                <h1 className="text-6xl lg:text-7xl xl:text-8xl font-bold text-gray-900 leading-[1.1] tracking-tight">
+              <div>
+                <p className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-6">Hydropower Engineering</p>
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-gray-900 leading-[1.05] tracking-tight">
                   {t.hero.title1}
-                  <span className="block text-blue-600">{t.hero.title2}</span>
+                  <span className="block font-medium">{t.hero.title2}</span>
                   <span className="block">{t.hero.title3}</span>
                 </h1>
-                <div className="h-[2px] w-32 bg-green-400"></div>
               </div>
 
-              <p className="text-xl lg:text-2xl text-gray-600 max-w-xl font-light leading-relaxed">
+              <p className="text-xl text-gray-500 max-w-lg leading-relaxed">
                 {t.hero.subtitle}
               </p>
 
-              <div className="flex gap-4">
+              <div className="flex gap-4 pt-4">
                 <button
                   onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="px-8 py-4 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                  className="px-8 py-4 bg-gray-900 text-white text-sm font-medium tracking-wide hover:bg-gray-800 transition-colors"
                 >
                   {t.hero.viewProjects}
                 </button>
                 <button
                   onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="px-8 py-4 border-2 border-gray-900 text-gray-900 font-medium rounded-full hover:bg-gray-900 hover:text-white transition-all duration-300"
+                  className="px-8 py-4 border border-gray-300 text-gray-900 text-sm font-medium tracking-wide hover:border-gray-900 transition-colors"
                 >
                   {t.hero.contactUs}
                 </button>
               </div>
             </div>
 
+            {/* Right - Image */}
             <div className="relative">
-              <div className="absolute -inset-4 bg-gradient-to-r from-blue-600 to-green-400 rounded-2xl blur-2xl opacity-20"></div>
-              <div className="relative rounded-2xl overflow-hidden aspect-[4/3] hover:scale-105 transition-transform duration-500 shadow-2xl">
+              <div className="relative aspect-[4/3] overflow-hidden">
                 <Image
                   src="/mainscreenimage2.png"
-                  alt="Hydropower turbine facility"
+                  alt="Hydropower facility"
                   fill
                   className="object-cover"
                   priority
@@ -587,109 +131,75 @@ export default function Home() {
             </div>
           </div>
         </div>
-
       </section>
 
-      {/* ABOUT / COMPANY SECTION */}
-      <section id="about" className="relative py-32 bg-white">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-green-400 to-transparent"></div>
-
-        <div className="container mx-auto px-6 lg:px-20">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="relative">
-              <div className="absolute -top-8 -left-8 w-72 h-72 bg-blue-100 rounded-full blur-3xl opacity-50"></div>
-              <div className="relative space-y-6">
-                <div className="inline-block">
-                  <div className="h-[2px] w-20 bg-green-400 mb-4"></div>
-                  <h2 className="text-5xl lg:text-6xl font-bold text-gray-900">
-                    {t.about.heading1}
-                    <span className="block text-blue-600">{t.about.heading2}</span>
-                  </h2>
-                </div>
-
-                <p className="text-lg text-gray-600 leading-relaxed">
-                  {t.about.paragraph1}
-                </p>
-
-                <p className="text-lg text-gray-600 leading-relaxed">
-                  {t.about.paragraph2}
-                </p>
-              </div>
+      {/* ABOUT - Editorial Two-Column */}
+      <section id="about" className="py-32 lg:py-40 border-b border-gray-100">
+        <div className="container mx-auto px-6 lg:px-16 xl:px-24">
+          <div className="grid lg:grid-cols-12 gap-16">
+            {/* Left Column - Headline */}
+            <div className="lg:col-span-5">
+              <p className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-6">About</p>
+              <h2 className="text-4xl lg:text-5xl font-light text-gray-900 leading-[1.1]">
+                {t.about.heading1}
+                <span className="block font-medium">{t.about.heading2}</span>
+              </h2>
             </div>
 
-            <div className="grid grid-cols-2 gap-6">
-              <div className="bg-blue-600 p-8 rounded-2xl text-white hover:scale-105 transition-transform duration-300">
-                <div className="h-[2px] w-12 bg-green-400 mb-4"></div>
-                <div className="text-5xl font-bold mb-2">{t.about.stat1}</div>
-                <div className="text-blue-100 font-light">{t.about.stat1Label}</div>
-              </div>
-              <div className="bg-gray-900 p-8 rounded-2xl text-white hover:scale-105 transition-transform duration-300">
-                <div className="h-[2px] w-12 bg-green-400 mb-4"></div>
-                <div className="text-5xl font-bold mb-2">{t.about.stat2}</div>
-                <div className="text-gray-300 font-light">{t.about.stat2Label}</div>
+            {/* Right Column - Content */}
+            <div className="lg:col-span-7 space-y-8">
+              <p className="text-lg text-gray-600 leading-relaxed">
+                {t.about.paragraph1}
+              </p>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                {t.about.paragraph2}
+              </p>
+
+              {/* Stats - Simple, No Cards */}
+              <div className="grid grid-cols-2 gap-12 pt-8 border-t border-gray-100">
+                <div>
+                  <div className="text-5xl font-light text-gray-900 mb-2">{t.about.stat1}</div>
+                  <div className="text-sm uppercase tracking-wide text-gray-400">{t.about.stat1Label}</div>
+                </div>
+                <div>
+                  <div className="text-5xl font-light text-gray-900 mb-2">{t.about.stat2}</div>
+                  <div className="text-sm uppercase tracking-wide text-gray-400">{t.about.stat2Label}</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SERVICES SECTION - Editorial Design */}
-      <section id="services" className="relative py-32 lg:py-40 bg-white">
-        <div className="container mx-auto px-6 lg:px-20 max-w-6xl">
-          {/* Section Header */}
-          <div className="mb-20 lg:mb-32">
-            <p className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-4">{t.services.heading}</p>
+      {/* SERVICES - Editorial List */}
+      <section id="services" className="py-32 lg:py-40 border-b border-gray-100">
+        <div className="container mx-auto px-6 lg:px-16 xl:px-24">
+          <div className="mb-20 lg:mb-28">
+            <p className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-6">{t.services.heading}</p>
             <h2 className="text-4xl lg:text-5xl xl:text-6xl font-light text-gray-900 max-w-3xl leading-[1.1]">
               {t.services.subheading}
             </h2>
           </div>
 
-          {/* Services List */}
           <div className="border-t border-gray-200">
             {[
-              {
-                number: '01',
-                title: t.services.service1Title,
-                description: t.services.service1Desc,
-              },
-              {
-                number: '02',
-                title: t.services.service2Title,
-                description: t.services.service2Desc,
-              },
-              {
-                number: '03',
-                title: t.services.service3Title,
-                description: t.services.service3Desc,
-              },
-              {
-                number: '04',
-                title: t.services.service4Title,
-                description: t.services.service4Desc,
-              }
+              { number: '01', title: t.services.service1Title, description: t.services.service1Desc },
+              { number: '02', title: t.services.service2Title, description: t.services.service2Desc },
+              { number: '03', title: t.services.service3Title, description: t.services.service3Desc },
+              { number: '04', title: t.services.service4Title, description: t.services.service4Desc }
             ].map((service, index) => (
-              <div
-                key={index}
-                className="group border-b border-gray-200 py-10 lg:py-14 cursor-pointer transition-colors hover:bg-gray-50"
-              >
-                <div className="grid grid-cols-12 gap-4 items-start">
-                  {/* Number */}
+              <div key={index} className="group border-b border-gray-200 py-10 lg:py-12">
+                <div className="grid grid-cols-12 gap-4 items-baseline">
                   <div className="col-span-2 lg:col-span-1">
-                    <span className="text-sm text-gray-400 font-mono">{service.number}</span>
+                    <span className="text-sm text-gray-300 font-mono">{service.number}</span>
                   </div>
-
-                  {/* Title */}
-                  <div className="col-span-10 lg:col-span-5">
-                    <h3 className="text-2xl lg:text-3xl font-medium text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
+                  <div className="col-span-10 lg:col-span-4">
+                    <h3 className="text-xl lg:text-2xl font-medium text-gray-900 group-hover:text-gray-600 transition-colors">
                       {service.title}
                     </h3>
                   </div>
-
-                  {/* Description */}
-                  <div className="col-span-12 lg:col-span-6 mt-4 lg:mt-0">
-                    <p className="text-gray-500 text-base lg:text-lg leading-relaxed max-w-xl">
-                      {service.description}
-                    </p>
+                  <div className="col-span-12 lg:col-span-7 mt-3 lg:mt-0">
+                    <p className="text-gray-500 leading-relaxed">{service.description}</p>
                   </div>
                 </div>
               </div>
@@ -698,316 +208,192 @@ export default function Home() {
         </div>
       </section>
 
-      {/* PROJECTS SECTION - DYNAMIC SNAKE TIMELINE */}
-      <section id="projects" className="relative py-32 bg-gradient-to-b from-white via-blue-50 to-white overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-green-400 to-transparent"></div>
+      {/* PROJECTS - Clean Grid, No Animation Gimmicks */}
+      <section id="projects" className="py-32 lg:py-40 border-b border-gray-100">
+        <div className="container mx-auto px-6 lg:px-16 xl:px-24">
+          <div className="mb-20 lg:mb-28">
+            <p className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-6">Portfolio</p>
+            <h2 className="text-4xl lg:text-5xl xl:text-6xl font-light text-gray-900 max-w-3xl leading-[1.1]">
+              {t.projectsSection.heading}
+            </h2>
+          </div>
 
-        <div className="container mx-auto px-6 lg:px-20 mb-20">
-          <div className="text-center">
-            <div className="inline-block">
-              <div className="h-[2px] w-20 bg-green-400 mb-4 mx-auto"></div>
-              <h2 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
-                {t.projectsSection.heading}
-              </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {t.projectsSection.subheading}
-              </p>
-            </div>
+          <div className="space-y-0">
+            {PROJECTS.map((project, index) => (
+              <Link key={project.id} href={`/projects/${project.id}`}>
+                <div className="group grid grid-cols-12 gap-6 py-12 border-b border-gray-100 cursor-pointer">
+                  {/* Number */}
+                  <div className="col-span-1 hidden lg:block">
+                    <span className="text-sm text-gray-300 font-mono">{String(index + 1).padStart(2, '0')}</span>
+                  </div>
+
+                  {/* Name & Location */}
+                  <div className="col-span-12 lg:col-span-4">
+                    <h3 className="text-2xl lg:text-3xl font-medium text-gray-900 group-hover:text-gray-600 transition-colors mb-2">
+                      {project.name}
+                    </h3>
+                    <p className="text-gray-400">{project.location}</p>
+                  </div>
+
+                  {/* Capacity */}
+                  <div className="col-span-6 lg:col-span-2">
+                    <p className="text-sm uppercase tracking-wide text-gray-400 mb-1">Capacity</p>
+                    <p className="text-lg font-medium text-gray-900">{project.capaticy} MW</p>
+                  </div>
+
+                  {/* Status */}
+                  <div className="col-span-6 lg:col-span-2">
+                    <p className="text-sm uppercase tracking-wide text-gray-400 mb-1">Status</p>
+                    <p className="text-lg text-gray-900">{project.state}</p>
+                  </div>
+
+                  {/* Arrow */}
+                  <div className="col-span-12 lg:col-span-3 flex items-center lg:justify-end">
+                    <span className="text-gray-300 group-hover:text-gray-900 transition-colors text-2xl">→</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
-
-        {/* Interactive Timeline */}
-        <DynamicTimeline />
       </section>
 
-      {/* TECHNICAL SPECIFICATIONS SECTION */}
-      <section id="technology" className="relative py-32 bg-gray-900 text-white">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-green-400 to-transparent"></div>
-
-        <div className="container mx-auto px-6 lg:px-20">
-          <div className="text-center mb-16">
-            <div className="inline-block">
-              <div className="h-[2px] w-20 bg-green-400 mb-4 mx-auto"></div>
-              <h2 className="text-5xl lg:text-6xl font-bold mb-4">
+      {/* CAPABILITIES - Replace Technical with cleaner approach */}
+      <section id="technology" className="py-32 lg:py-40 bg-gray-900 text-white">
+        <div className="container mx-auto px-6 lg:px-16 xl:px-24">
+          <div className="grid lg:grid-cols-12 gap-16 mb-20">
+            <div className="lg:col-span-5">
+              <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-6">Capabilities</p>
+              <h2 className="text-4xl lg:text-5xl font-light leading-[1.1]">
                 {t.technical.heading}
               </h2>
-              <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            </div>
+            <div className="lg:col-span-7">
+              <p className="text-lg text-gray-400 leading-relaxed">
                 {t.technical.subheading}
               </p>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Specs Grid - Minimal */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 py-12 border-t border-gray-800">
             {[
-              { label: t.technical.spec1Label, value: '15+', description: t.technical.spec1Desc },
-              { label: t.technical.spec2Label, value: '94.5%', description: t.technical.spec2Desc },
-              { label: t.technical.spec3Label, value: '2.5M tons', description: t.technical.spec3Desc },
-              { label: t.technical.spec4Label, value: '5-500 m³/s', description: t.technical.spec4Desc },
+              { value: '15+', label: t.technical.spec1Label },
+              { value: '94.5%', label: t.technical.spec2Label },
+              { value: '2.5M', label: t.technical.spec3Label },
+              { value: '500 m³/s', label: t.technical.spec4Label },
             ].map((spec, index) => (
-              <div
-                key={index}
-                className="bg-gray-800 p-8 rounded-2xl border border-gray-700 hover:border-green-400 transition-all duration-300 hover:scale-105"
-              >
-                <div className="h-[2px] w-12 bg-green-400 mb-4"></div>
-                <div className="text-4xl font-bold text-blue-400 mb-2">{spec.value}</div>
-                <div className="text-xl font-semibold mb-2">{spec.label}</div>
-                <p className="text-gray-400 text-sm">{spec.description}</p>
+              <div key={index}>
+                <div className="text-4xl lg:text-5xl font-light mb-3">{spec.value}</div>
+                <div className="text-sm uppercase tracking-wide text-gray-500">{spec.label}</div>
               </div>
             ))}
           </div>
 
-          <div className="mt-16 grid md:grid-cols-3 gap-8">
-            <div className="bg-white text-gray-900 p-8 rounded-2xl">
-              <div className="h-[2px] w-12 bg-green-400 mb-4"></div>
-              <h3 className="text-2xl font-bold mb-4">{t.technical.turbineTitle}</h3>
-              <ul className="space-y-3 text-gray-600">
-                <li className="flex items-start gap-2">
-                  <span className="text-green-400 mt-1">✓</span>
-                  <span>{t.technical.turbine1}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-400 mt-1">✓</span>
-                  <span>{t.technical.turbine2}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-400 mt-1">✓</span>
-                  <span>{t.technical.turbine3}</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-blue-600 text-white p-8 rounded-2xl">
-              <div className="h-[2px] w-12 bg-green-400 mb-4"></div>
-              <h3 className="text-2xl font-bold mb-4">{t.technical.efficiencyTitle}</h3>
-              <ul className="space-y-3 text-blue-100">
-                <li className="flex items-start gap-2">
-                  <span className="text-green-400 mt-1">✓</span>
-                  <span>{t.technical.efficiency1}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-400 mt-1">✓</span>
-                  <span>{t.technical.efficiency2}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-400 mt-1">✓</span>
-                  <span>{t.technical.efficiency3}</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-gray-800 border border-gray-700 p-8 rounded-2xl">
-              <div className="h-[2px] w-12 bg-green-400 mb-4"></div>
-              <h3 className="text-2xl font-bold mb-4">{t.technical.environmentTitle}</h3>
-              <ul className="space-y-3 text-gray-400">
-                <li className="flex items-start gap-2">
-                  <span className="text-green-400 mt-1">✓</span>
-                  <span>{t.technical.environment1}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-400 mt-1">✓</span>
-                  <span>{t.technical.environment2}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-400 mt-1">✓</span>
-                  <span>{t.technical.environment3}</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* WHY CHOOSE US SECTION */}
-      <section className="relative py-32 bg-gradient-to-br from-blue-50 to-white">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-green-400 to-transparent"></div>
-
-        <div className="container mx-auto px-6 lg:px-20">
-          <div className="text-center mb-16">
-            <div className="inline-block">
-              <div className="h-[2px] w-20 bg-green-400 mb-4 mx-auto"></div>
-              <h2 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
-                {t.whyChoose.heading}
-              </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {t.whyChoose.subheading}
-              </p>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              {
-                stat: t.whyChoose.reason1Stat,
-                label: t.whyChoose.reason1Label,
-                description: t.whyChoose.reason1Desc
-              },
-              {
-                stat: t.whyChoose.reason2Stat,
-                label: t.whyChoose.reason2Label,
-                description: t.whyChoose.reason2Desc
-              },
-              {
-                stat: t.whyChoose.reason3Stat,
-                label: t.whyChoose.reason3Label,
-                description: t.whyChoose.reason3Desc
-              },
-              {
-                stat: t.whyChoose.reason4Stat,
-                label: t.whyChoose.reason4Label,
-                description: t.whyChoose.reason4Desc
-              },
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
-              >
-                <div className="h-[2px] w-12 bg-green-400 mb-6"></div>
-                <div className="text-5xl font-bold text-blue-600 mb-3">{item.stat}</div>
-                <div className="text-xl font-semibold text-gray-900 mb-2">{item.label}</div>
-                <p className="text-gray-600 text-sm">{item.description}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-16 bg-white rounded-2xl p-12 shadow-xl">
-            <div className="grid lg:grid-cols-3 gap-12">
-              <div>
-                <div className="h-[2px] w-12 bg-green-400 mb-4"></div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">{t.whyChoose.certificationsTitle}</h3>
-                <div className="space-y-2 text-gray-600">
-                  <p>• ISO 9001:2015 Quality Management</p>
-                  <p>• ISO 14001:2015 Environmental</p>
-                  <p>• OHSAS 18001 Safety Standards</p>
-                  <p>• IEC 61850 Power Systems</p>
-                </div>
-              </div>
-
-              <div>
-                <div className="h-[2px] w-12 bg-green-400 mb-4"></div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">{t.whyChoose.warrantiesTitle}</h3>
-                <div className="space-y-2 text-gray-600">
-                  <p>• 10-year turbine warranty</p>
-                  <p>• 5-year parts guarantee</p>
-                  <p>• Lifetime technical support</p>
-                  <p>• Performance guarantees</p>
-                </div>
-              </div>
-
-              <div>
-                <div className="h-[2px] w-12 bg-green-400 mb-4"></div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">{t.whyChoose.monitoringTitle}</h3>
-                <div className="space-y-2 text-gray-600">
-                  <p>• Real-time SCADA systems</p>
-                  <p>• Predictive maintenance AI</p>
-                  <p>• Remote diagnostics</p>
-                  <p>• Performance analytics</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CONTACT SECTION */}
-      <section id="contact" className="relative py-32 bg-blue-600 text-white">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-green-400 to-transparent"></div>
-
-        <div className="container mx-auto px-6 lg:px-20">
-          <div className="grid lg:grid-cols-2 gap-16">
+          {/* Three Columns */}
+          <div className="grid lg:grid-cols-3 gap-12 pt-20 border-t border-gray-800 mt-12">
             <div>
-              <div className="h-[2px] w-20 bg-green-400 mb-6"></div>
-              <h2 className="text-5xl lg:text-6xl font-bold mb-6">
+              <h3 className="text-xl font-medium mb-6">{t.technical.turbineTitle}</h3>
+              <ul className="space-y-3 text-gray-400">
+                <li>{t.technical.turbine1}</li>
+                <li>{t.technical.turbine2}</li>
+                <li>{t.technical.turbine3}</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-xl font-medium mb-6">{t.technical.efficiencyTitle}</h3>
+              <ul className="space-y-3 text-gray-400">
+                <li>{t.technical.efficiency1}</li>
+                <li>{t.technical.efficiency2}</li>
+                <li>{t.technical.efficiency3}</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-xl font-medium mb-6">{t.technical.environmentTitle}</h3>
+              <ul className="space-y-3 text-gray-400">
+                <li>{t.technical.environment1}</li>
+                <li>{t.technical.environment2}</li>
+                <li>{t.technical.environment3}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CONTACT - Professional, No Emojis */}
+      <section id="contact" className="py-32 lg:py-40 border-b border-gray-100">
+        <div className="container mx-auto px-6 lg:px-16 xl:px-24">
+          <div className="grid lg:grid-cols-2 gap-20">
+            {/* Left - Info */}
+            <div>
+              <p className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-6">Contact</p>
+              <h2 className="text-4xl lg:text-5xl font-light text-gray-900 leading-[1.1] mb-8">
                 {t.contactSection.heading1}
-                <span className="block">{t.contactSection.heading2}</span>
+                <span className="block font-medium">{t.contactSection.heading2}</span>
               </h2>
-              <p className="text-xl text-blue-100 mb-12 leading-relaxed">
+              <p className="text-lg text-gray-500 mb-12 leading-relaxed max-w-md">
                 {t.contactSection.subtitle}
               </p>
 
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-green-400 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl">📧</span>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-lg">{t.contactSection.email}</div>
-                    <div className="text-blue-100">info@hydropower.com</div>
-                  </div>
+              <div className="space-y-8">
+                <div>
+                  <p className="text-sm uppercase tracking-wide text-gray-400 mb-2">{t.contactSection.email}</p>
+                  <p className="text-lg text-gray-900">info@rasimrama.com</p>
                 </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-green-400 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl">📞</span>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-lg">{t.contactSection.phone}</div>
-                    <div className="text-blue-100">+1 (555) 123-4567</div>
-                  </div>
+                <div>
+                  <p className="text-sm uppercase tracking-wide text-gray-400 mb-2">{t.contactSection.phone}</p>
+                  <p className="text-lg text-gray-900">+355 69 XXX XXXX</p>
                 </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-green-400 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl">📍</span>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-lg">{t.contactSection.headquarters}</div>
-                    <div className="text-blue-100">Vienna, Austria</div>
-                  </div>
+                <div>
+                  <p className="text-sm uppercase tracking-wide text-gray-400 mb-2">{t.contactSection.headquarters}</p>
+                  <p className="text-lg text-gray-900">Tirana, Albania</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white text-gray-900 p-8 rounded-2xl shadow-2xl">
-              <div className="h-[2px] w-12 bg-green-400 mb-6"></div>
-              <h3 className="text-2xl font-bold mb-6">{t.contactSection.formHeading}</h3>
-
-              <form className="space-y-4" onSubmit={handleSubmit}>
+            {/* Right - Form */}
+            <div>
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 {formStatus.type && (
-                  <div
-                    className={`p-4 rounded-lg ${
-                      formStatus.type === 'success'
-                        ? 'bg-green-100 text-green-800 border border-green-300'
-                        : 'bg-red-100 text-red-800 border border-red-300'
-                    }`}
-                  >
+                  <div className={`p-4 text-sm ${formStatus.type === 'success' ? 'bg-gray-100 text-gray-900' : 'bg-red-50 text-red-900'}`}>
                     {formStatus.message}
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">{t.contactSection.nameLabel}</label>
+                  <label className="block text-sm uppercase tracking-wide text-gray-400 mb-3">{t.contactSection.nameLabel}</label>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleFormChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full px-0 py-3 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-lg transition-colors"
                     placeholder={t.contactSection.namePlaceholder}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">{t.contactSection.emailLabel}</label>
+                  <label className="block text-sm uppercase tracking-wide text-gray-400 mb-3">{t.contactSection.emailLabel}</label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleFormChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full px-0 py-3 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-lg transition-colors"
                     placeholder={t.contactSection.emailPlaceholder}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">{t.contactSection.projectTypeLabel}</label>
+                  <label className="block text-sm uppercase tracking-wide text-gray-400 mb-3">{t.contactSection.projectTypeLabel}</label>
                   <select
                     name="project_type"
                     value={formData.project_type}
                     onChange={handleFormChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full px-0 py-3 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-lg bg-transparent transition-colors"
                   >
                     <option value="new_installation">{t.contactSection.option1}</option>
                     <option value="turbine_upgrade">{t.contactSection.option2}</option>
@@ -1017,14 +403,14 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">{t.contactSection.messageLabel}</label>
+                  <label className="block text-sm uppercase tracking-wide text-gray-400 mb-3">{t.contactSection.messageLabel}</label>
                   <textarea
                     name="message"
                     value={formData.message}
                     onChange={handleFormChange}
                     required
                     rows={4}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full px-0 py-3 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-lg resize-none transition-colors"
                     placeholder={t.contactSection.messagePlaceholder}
                   ></textarea>
                 </div>
@@ -1032,72 +418,49 @@ export default function Home() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300 disabled:bg-blue-400 disabled:cursor-not-allowed"
+                  className="w-full bg-gray-900 text-white py-4 text-sm font-medium tracking-wide hover:bg-gray-800 transition-colors disabled:bg-gray-400 mt-8"
                 >
                   {submitting ? 'Sending...' : t.contactSection.sendButton}
                 </button>
               </form>
             </div>
           </div>
-
-          {/* Map Placeholder */}
-          <div className="mt-16 bg-blue-700 rounded-2xl p-12 text-center">
-            <div className="h-[2px] w-20 bg-green-400 mb-6 mx-auto"></div>
-            <h3 className="text-3xl font-bold mb-4">{t.contactSection.mapHeading}</h3>
-            <div className="bg-blue-800 rounded-xl h-64 flex items-center justify-center">
-              <span className="text-blue-400">[Interactive Map with Project Pins]</span>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="relative bg-gray-900 text-white py-12">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-green-400 to-transparent"></div>
-
-        <div className="container mx-auto px-6 lg:px-20">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="h-[2px] w-12 bg-green-400 mb-4"></div>
-              <h4 className="font-bold text-xl mb-4">Hydropower Engineering</h4>
-              <p className="text-gray-400 text-sm">
+      {/* FOOTER - Minimal */}
+      <footer className="py-16 bg-white">
+        <div className="container mx-auto px-6 lg:px-16 xl:px-24">
+          <div className="grid lg:grid-cols-4 gap-12 mb-16">
+            <div className="lg:col-span-2">
+              <h4 className="text-xl font-medium text-gray-900 mb-4">Rasim Rama</h4>
+              <p className="text-gray-500 max-w-sm leading-relaxed">
                 {t.footer.description}
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">{t.footer.servicesTitle}</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
+              <h4 className="text-sm uppercase tracking-wide text-gray-400 mb-4">{t.footer.servicesTitle}</h4>
+              <ul className="space-y-3 text-gray-600">
                 <li>Turbine Installation</li>
-                <li>Hydrocentral Design</li>
-                <li>Flow Analysis</li>
-                <li>Monitoring Systems</li>
+                <li>Assembly</li>
+                <li>Maintenance</li>
+                <li>Repairs</li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">{t.footer.companyTitle}</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li>About Us</li>
+              <h4 className="text-sm uppercase tracking-wide text-gray-400 mb-4">{t.footer.companyTitle}</h4>
+              <ul className="space-y-3 text-gray-600">
+                <li>About</li>
                 <li>Projects</li>
-                <li>Certifications</li>
-                <li>Careers</li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">{t.footer.connectTitle}</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li>LinkedIn</li>
-                <li>Twitter</li>
                 <li>Contact</li>
-                <li>Newsletter</li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
-            <p>{t.footer.copyright}</p>
+          <div className="pt-8 border-t border-gray-100 text-center">
+            <p className="text-sm text-gray-400">{t.footer.copyright}</p>
           </div>
         </div>
       </footer>
