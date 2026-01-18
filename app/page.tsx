@@ -81,45 +81,48 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-white">
-      {/* HERO - Clean, Confident, Editorial */}
+    <div className="bg-white overflow-x-hidden w-full max-w-full">
+      {/* HERO - Responsive Editorial */}
       <section id="home" className="min-h-screen flex items-center border-b border-gray-100">
-        <div className="container mx-auto px-6 lg:px-16 xl:px-24 py-24">
-          <div className="grid lg:grid-cols-2 gap-16 xl:gap-24 items-center">
+        <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24 py-16 sm:py-20 lg:py-24">
+          <div className="grid lg:grid-cols-2 gap-10 md:gap-14 lg:gap-16 xl:gap-24 items-center">
             {/* Left - Typography */}
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8 order-2 lg:order-1">
               <div>
-                <p className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-6">Hydropower Engineering</p>
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-gray-900 leading-[1.05] tracking-tight">
+                <p className="text-xs sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-4 sm:mb-6">
+                  Hydropower Engineering
+                </p>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-light text-gray-900 leading-[1.08] sm:leading-[1.05] tracking-tight">
                   {t.hero.title1}
                   <span className="block font-medium">{t.hero.title2}</span>
                   <span className="block">{t.hero.title3}</span>
                 </h1>
               </div>
 
-              <p className="text-xl text-gray-500 max-w-lg leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-gray-500 max-w-lg leading-relaxed">
                 {t.hero.subtitle}
               </p>
 
-              <div className="flex gap-4 pt-4">
+              {/* Buttons - Stack on mobile, row on tablet+ */}
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
                 <button
                   onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="px-8 py-4 bg-gray-900 text-white text-sm font-medium tracking-wide hover:bg-gray-800 transition-colors"
+                  className="px-6 sm:px-8 py-3.5 sm:py-4 bg-gray-900 text-white text-sm font-medium tracking-wide hover:bg-gray-800 transition-colors"
                 >
                   {t.hero.viewProjects}
                 </button>
                 <button
                   onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="px-8 py-4 border border-gray-300 text-gray-900 text-sm font-medium tracking-wide hover:border-gray-900 transition-colors"
+                  className="px-6 sm:px-8 py-3.5 sm:py-4 border border-gray-300 text-gray-900 text-sm font-medium tracking-wide hover:border-gray-900 transition-colors"
                 >
                   {t.hero.contactUs}
                 </button>
               </div>
             </div>
 
-            {/* Right - Image */}
-            <div className="relative">
-              <div className="relative aspect-[4/3] overflow-hidden">
+            {/* Right - Image (shows first on mobile) */}
+            <div className="relative order-1 lg:order-2">
+              <div className="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] overflow-hidden">
                 <Image
                   src="/mainscreenimage2.png"
                   alt="Hydropower facility"
@@ -133,37 +136,37 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ABOUT - Editorial Two-Column */}
-      <section id="about" className="py-32 lg:py-40 border-b border-gray-100">
-        <div className="container mx-auto px-6 lg:px-16 xl:px-24">
-          <div className="grid lg:grid-cols-12 gap-16">
+      {/* ABOUT - Responsive Editorial Two-Column */}
+      <section id="about" className="py-20 sm:py-24 md:py-32 lg:py-40 border-b border-gray-100">
+        <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24">
+          <div className="grid lg:grid-cols-12 gap-10 md:gap-12 lg:gap-16">
             {/* Left Column - Headline */}
             <div className="lg:col-span-5">
-              <p className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-6">About</p>
-              <h2 className="text-4xl lg:text-5xl font-light text-gray-900 leading-[1.1]">
+              <p className="text-xs sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-4 sm:mb-6">About</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light text-gray-900 leading-[1.15] sm:leading-[1.1]">
                 {t.about.heading1}
                 <span className="block font-medium">{t.about.heading2}</span>
               </h2>
             </div>
 
             {/* Right Column - Content */}
-            <div className="lg:col-span-7 space-y-8">
-              <p className="text-lg text-gray-600 leading-relaxed">
+            <div className="lg:col-span-7 space-y-6 sm:space-y-8">
+              <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
                 {t.about.paragraph1}
               </p>
-              <p className="text-lg text-gray-600 leading-relaxed">
+              <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
                 {t.about.paragraph2}
               </p>
 
-              {/* Stats - Simple, No Cards */}
-              <div className="grid grid-cols-2 gap-12 pt-8 border-t border-gray-100">
+              {/* Stats - Responsive Grid */}
+              <div className="grid grid-cols-2 gap-8 sm:gap-12 pt-6 sm:pt-8 border-t border-gray-100">
                 <div>
-                  <div className="text-5xl font-light text-gray-900 mb-2">{t.about.stat1}</div>
-                  <div className="text-sm uppercase tracking-wide text-gray-400">{t.about.stat1Label}</div>
+                  <div className="text-4xl sm:text-5xl font-light text-gray-900 mb-1 sm:mb-2">{t.about.stat1}</div>
+                  <div className="text-xs sm:text-sm uppercase tracking-wide text-gray-400">{t.about.stat1Label}</div>
                 </div>
                 <div>
-                  <div className="text-5xl font-light text-gray-900 mb-2">{t.about.stat2}</div>
-                  <div className="text-sm uppercase tracking-wide text-gray-400">{t.about.stat2Label}</div>
+                  <div className="text-4xl sm:text-5xl font-light text-gray-900 mb-1 sm:mb-2">{t.about.stat2}</div>
+                  <div className="text-xs sm:text-sm uppercase tracking-wide text-gray-400">{t.about.stat2Label}</div>
                 </div>
               </div>
             </div>
@@ -171,12 +174,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SERVICES - Editorial List */}
-      <section id="services" className="py-32 lg:py-40 border-b border-gray-100">
-        <div className="container mx-auto px-6 lg:px-16 xl:px-24">
-          <div className="mb-20 lg:mb-28">
-            <p className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-6">{t.services.heading}</p>
-            <h2 className="text-4xl lg:text-5xl xl:text-6xl font-light text-gray-900 max-w-3xl leading-[1.1]">
+      {/* SERVICES - Responsive Editorial List */}
+      <section id="services" className="py-20 sm:py-24 md:py-32 lg:py-40 border-b border-gray-100">
+        <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24">
+          <div className="mb-12 sm:mb-16 md:mb-20 lg:mb-28">
+            <p className="text-xs sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-4 sm:mb-6">{t.services.heading}</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-light text-gray-900 max-w-3xl leading-[1.15] sm:leading-[1.1]">
               {t.services.subheading}
             </h2>
           </div>
@@ -188,18 +191,21 @@ export default function Home() {
               { number: '03', title: t.services.service3Title, description: t.services.service3Desc },
               { number: '04', title: t.services.service4Title, description: t.services.service4Desc }
             ].map((service, index) => (
-              <div key={index} className="group border-b border-gray-200 py-10 lg:py-12">
-                <div className="grid grid-cols-12 gap-4 items-baseline">
-                  <div className="col-span-2 lg:col-span-1">
-                    <span className="text-sm text-gray-300 font-mono">{service.number}</span>
-                  </div>
-                  <div className="col-span-10 lg:col-span-4">
-                    <h3 className="text-xl lg:text-2xl font-medium text-gray-900 group-hover:text-gray-600 transition-colors">
+              <div key={index} className="group border-b border-gray-200 py-6 sm:py-8 md:py-10 lg:py-12">
+                {/* Mobile: Stacked layout / Desktop: Grid layout */}
+                <div className="flex flex-col md:grid md:grid-cols-12 md:gap-4 md:items-baseline">
+                  {/* Number + Title row on mobile */}
+                  <div className="flex items-baseline gap-4 md:contents">
+                    <span className="text-xs sm:text-sm text-gray-300 font-mono md:col-span-1 flex-shrink-0 w-6 md:w-auto">
+                      {service.number}
+                    </span>
+                    <h3 className="text-lg sm:text-xl lg:text-2xl font-medium text-gray-900 group-hover:text-gray-600 transition-colors md:col-span-4">
                       {service.title}
                     </h3>
                   </div>
-                  <div className="col-span-12 lg:col-span-7 mt-3 lg:mt-0">
-                    <p className="text-gray-500 leading-relaxed">{service.description}</p>
+                  {/* Description */}
+                  <div className="mt-3 md:mt-0 md:col-span-7 pl-10 md:pl-0">
+                    <p className="text-sm sm:text-base text-gray-500 leading-relaxed">{service.description}</p>
                   </div>
                 </div>
               </div>
@@ -208,12 +214,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* PROJECTS - Clean Grid, No Animation Gimmicks */}
-      <section id="projects" className="py-32 lg:py-40 border-b border-gray-100">
-        <div className="container mx-auto px-6 lg:px-16 xl:px-24">
-          <div className="mb-20 lg:mb-28">
-            <p className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-6">Portfolio</p>
-            <h2 className="text-4xl lg:text-5xl xl:text-6xl font-light text-gray-900 max-w-3xl leading-[1.1]">
+      {/* PROJECTS - Responsive Clean Layout */}
+      <section id="projects" className="py-20 sm:py-24 md:py-32 lg:py-40 border-b border-gray-100">
+        <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24">
+          <div className="mb-12 sm:mb-16 md:mb-20 lg:mb-28">
+            <p className="text-xs sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-4 sm:mb-6">Portfolio</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-light text-gray-900 max-w-3xl leading-[1.15] sm:leading-[1.1]">
               {t.projectsSection.heading}
             </h2>
           </div>
@@ -221,35 +227,46 @@ export default function Home() {
           <div className="space-y-0">
             {PROJECTS.map((project, index) => (
               <Link key={project.id} href={`/projects/${project.id}`}>
-                <div className="group grid grid-cols-12 gap-6 py-12 border-b border-gray-100 cursor-pointer">
-                  {/* Number */}
-                  <div className="col-span-1 hidden lg:block">
-                    <span className="text-sm text-gray-300 font-mono">{String(index + 1).padStart(2, '0')}</span>
-                  </div>
+                <div className="group py-8 sm:py-10 md:py-12 border-b border-gray-100 cursor-pointer">
+                  {/* Desktop: Single row grid / Mobile: Stacked */}
+                  <div className="flex flex-col lg:grid lg:grid-cols-12 lg:gap-6 lg:items-center">
+                    {/* Number - Hidden on mobile */}
+                    <div className="hidden lg:block lg:col-span-1">
+                      <span className="text-sm text-gray-300 font-mono">{String(index + 1).padStart(2, '0')}</span>
+                    </div>
 
-                  {/* Name & Location */}
-                  <div className="col-span-12 lg:col-span-4">
-                    <h3 className="text-2xl lg:text-3xl font-medium text-gray-900 group-hover:text-gray-600 transition-colors mb-2">
-                      {project.name}
-                    </h3>
-                    <p className="text-gray-400">{project.location}</p>
-                  </div>
+                    {/* Name & Location */}
+                    <div className="lg:col-span-4 mb-4 lg:mb-0">
+                      <div className="flex items-start gap-3 lg:block">
+                        <span className="text-xs text-gray-300 font-mono lg:hidden mt-1.5">
+                          {String(index + 1).padStart(2, '0')}
+                        </span>
+                        <div>
+                          <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-gray-900 group-hover:text-gray-600 transition-colors mb-1 sm:mb-2">
+                            {project.name}
+                          </h3>
+                          <p className="text-sm sm:text-base text-gray-400">{project.location}</p>
+                        </div>
+                      </div>
+                    </div>
 
-                  {/* Capacity */}
-                  <div className="col-span-6 lg:col-span-2">
-                    <p className="text-sm uppercase tracking-wide text-gray-400 mb-1">Capacity</p>
-                    <p className="text-lg font-medium text-gray-900">{project.capaticy} MW</p>
-                  </div>
+                    {/* Metadata: Capacity & Status */}
+                    <div className="flex gap-8 sm:gap-12 lg:contents pl-7 lg:pl-0">
+                      <div className="lg:col-span-2">
+                        <p className="text-xs uppercase tracking-wide text-gray-400 mb-0.5 sm:mb-1">Capacity</p>
+                        <p className="text-base sm:text-lg font-medium text-gray-900">{project.capaticy} MW</p>
+                      </div>
 
-                  {/* Status */}
-                  <div className="col-span-6 lg:col-span-2">
-                    <p className="text-sm uppercase tracking-wide text-gray-400 mb-1">Status</p>
-                    <p className="text-lg text-gray-900">{project.state}</p>
-                  </div>
+                      <div className="lg:col-span-2">
+                        <p className="text-xs uppercase tracking-wide text-gray-400 mb-0.5 sm:mb-1">Status</p>
+                        <p className="text-base sm:text-lg text-gray-900">{project.state}</p>
+                      </div>
+                    </div>
 
-                  {/* Arrow */}
-                  <div className="col-span-12 lg:col-span-3 flex items-center lg:justify-end">
-                    <span className="text-gray-300 group-hover:text-gray-900 transition-colors text-2xl">→</span>
+                    {/* Arrow */}
+                    <div className="lg:col-span-3 flex items-center lg:justify-end mt-4 lg:mt-0 pl-7 lg:pl-0">
+                      <span className="text-gray-300 group-hover:text-gray-900 transition-colors text-xl sm:text-2xl">→</span>
+                    </div>
                   </div>
                 </div>
               </Link>
@@ -258,25 +275,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CAPABILITIES - Replace Technical with cleaner approach */}
-      <section id="technology" className="py-32 lg:py-40 bg-gray-900 text-white">
-        <div className="container mx-auto px-6 lg:px-16 xl:px-24">
-          <div className="grid lg:grid-cols-12 gap-16 mb-20">
+      {/* CAPABILITIES - Responsive Dark Section */}
+      <section id="technology" className="py-20 sm:py-24 md:py-32 lg:py-40 bg-gray-900 text-white">
+        <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24">
+          <div className="grid lg:grid-cols-12 gap-8 md:gap-12 lg:gap-16 mb-12 sm:mb-16 md:mb-20">
             <div className="lg:col-span-5">
-              <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-6">Capabilities</p>
-              <h2 className="text-4xl lg:text-5xl font-light leading-[1.1]">
+              <p className="text-xs sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-500 mb-4 sm:mb-6">Capabilities</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light leading-[1.15] sm:leading-[1.1]">
                 {t.technical.heading}
               </h2>
             </div>
             <div className="lg:col-span-7">
-              <p className="text-lg text-gray-400 leading-relaxed">
+              <p className="text-base sm:text-lg text-gray-400 leading-relaxed">
                 {t.technical.subheading}
               </p>
             </div>
           </div>
 
-          {/* Specs Grid - Minimal */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 py-12 border-t border-gray-800">
+          {/* Specs Grid - 2x2 on mobile, 4-col on desktop */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-8 py-8 sm:py-10 md:py-12 border-t border-gray-800">
             {[
               { value: '15+', label: t.technical.spec1Label },
               { value: '94.5%', label: t.technical.spec2Label },
@@ -284,33 +301,33 @@ export default function Home() {
               { value: '500 m³/s', label: t.technical.spec4Label },
             ].map((spec, index) => (
               <div key={index}>
-                <div className="text-4xl lg:text-5xl font-light mb-3">{spec.value}</div>
-                <div className="text-sm uppercase tracking-wide text-gray-500">{spec.label}</div>
+                <div className="text-3xl sm:text-4xl lg:text-5xl font-light mb-2 sm:mb-3">{spec.value}</div>
+                <div className="text-xs sm:text-sm uppercase tracking-wide text-gray-500">{spec.label}</div>
               </div>
             ))}
           </div>
 
-          {/* Three Columns */}
-          <div className="grid lg:grid-cols-3 gap-12 pt-20 border-t border-gray-800 mt-12">
+          {/* Three Columns - Stack on mobile, 3-col on desktop */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:gap-8 md:gap-12 pt-12 sm:pt-16 md:pt-20 border-t border-gray-800 mt-8 sm:mt-10 md:mt-12">
             <div>
-              <h3 className="text-xl font-medium mb-6">{t.technical.turbineTitle}</h3>
-              <ul className="space-y-3 text-gray-400">
+              <h3 className="text-lg sm:text-xl font-medium mb-4 sm:mb-6">{t.technical.turbineTitle}</h3>
+              <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-gray-400">
                 <li>{t.technical.turbine1}</li>
                 <li>{t.technical.turbine2}</li>
                 <li>{t.technical.turbine3}</li>
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-medium mb-6">{t.technical.efficiencyTitle}</h3>
-              <ul className="space-y-3 text-gray-400">
+              <h3 className="text-lg sm:text-xl font-medium mb-4 sm:mb-6">{t.technical.efficiencyTitle}</h3>
+              <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-gray-400">
                 <li>{t.technical.efficiency1}</li>
                 <li>{t.technical.efficiency2}</li>
                 <li>{t.technical.efficiency3}</li>
               </ul>
             </div>
-            <div>
-              <h3 className="text-xl font-medium mb-6">{t.technical.environmentTitle}</h3>
-              <ul className="space-y-3 text-gray-400">
+            <div className="sm:col-span-2 lg:col-span-1">
+              <h3 className="text-lg sm:text-xl font-medium mb-4 sm:mb-6">{t.technical.environmentTitle}</h3>
+              <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-gray-400">
                 <li>{t.technical.environment1}</li>
                 <li>{t.technical.environment2}</li>
                 <li>{t.technical.environment3}</li>
@@ -320,80 +337,81 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CONTACT - Professional, No Emojis */}
-      <section id="contact" className="py-32 lg:py-40 border-b border-gray-100">
-        <div className="container mx-auto px-6 lg:px-16 xl:px-24">
-          <div className="grid lg:grid-cols-2 gap-20">
+      {/* CONTACT - Responsive Professional Form */}
+      <section id="contact" className="py-20 sm:py-24 md:py-32 lg:py-40 border-b border-gray-100">
+        <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24">
+          <div className="grid lg:grid-cols-2 gap-12 md:gap-16 lg:gap-20">
             {/* Left - Info */}
             <div>
-              <p className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-6">Contact</p>
-              <h2 className="text-4xl lg:text-5xl font-light text-gray-900 leading-[1.1] mb-8">
+              <p className="text-xs sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-4 sm:mb-6">Contact</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light text-gray-900 leading-[1.15] sm:leading-[1.1] mb-6 sm:mb-8">
                 {t.contactSection.heading1}
                 <span className="block font-medium">{t.contactSection.heading2}</span>
               </h2>
-              <p className="text-lg text-gray-500 mb-12 leading-relaxed max-w-md">
+              <p className="text-base sm:text-lg text-gray-500 mb-8 sm:mb-12 leading-relaxed max-w-md">
                 {t.contactSection.subtitle}
               </p>
 
-              <div className="space-y-8">
+              {/* Contact Info - Horizontal on tablet, vertical elsewhere */}
+              <div className="grid sm:grid-cols-3 lg:grid-cols-1 gap-6 sm:gap-4 lg:gap-8">
                 <div>
-                  <p className="text-sm uppercase tracking-wide text-gray-400 mb-2">{t.contactSection.email}</p>
-                  <p className="text-lg text-gray-900">info@rasimrama.com</p>
+                  <p className="text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-1 sm:mb-2">{t.contactSection.email}</p>
+                  <p className="text-base sm:text-lg text-gray-900">info@rasimrama.com</p>
                 </div>
                 <div>
-                  <p className="text-sm uppercase tracking-wide text-gray-400 mb-2">{t.contactSection.phone}</p>
-                  <p className="text-lg text-gray-900">+355 69 XXX XXXX</p>
+                  <p className="text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-1 sm:mb-2">{t.contactSection.phone}</p>
+                  <p className="text-base sm:text-lg text-gray-900">+355 69 XXX XXXX</p>
                 </div>
                 <div>
-                  <p className="text-sm uppercase tracking-wide text-gray-400 mb-2">{t.contactSection.headquarters}</p>
-                  <p className="text-lg text-gray-900">Tirana, Albania</p>
+                  <p className="text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-1 sm:mb-2">{t.contactSection.headquarters}</p>
+                  <p className="text-base sm:text-lg text-gray-900">Tirana, Albania</p>
                 </div>
               </div>
             </div>
 
             {/* Right - Form */}
             <div>
-              <form className="space-y-6" onSubmit={handleSubmit}>
+              <form className="space-y-5 sm:space-y-6" onSubmit={handleSubmit}>
                 {formStatus.type && (
-                  <div className={`p-4 text-sm ${formStatus.type === 'success' ? 'bg-gray-100 text-gray-900' : 'bg-red-50 text-red-900'}`}>
+                  <div className={`p-3 sm:p-4 text-sm ${formStatus.type === 'success' ? 'bg-gray-100 text-gray-900' : 'bg-red-50 text-red-900'}`}>
                     {formStatus.message}
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-sm uppercase tracking-wide text-gray-400 mb-3">{t.contactSection.nameLabel}</label>
+                  <label className="block text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-2 sm:mb-3">{t.contactSection.nameLabel}</label>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleFormChange}
                     required
-                    className="w-full px-0 py-3 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-lg transition-colors"
+                    className="w-full px-0 py-3 sm:py-3.5 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-base sm:text-lg transition-colors bg-transparent"
                     placeholder={t.contactSection.namePlaceholder}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm uppercase tracking-wide text-gray-400 mb-3">{t.contactSection.emailLabel}</label>
+                  <label className="block text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-2 sm:mb-3">{t.contactSection.emailLabel}</label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleFormChange}
                     required
-                    className="w-full px-0 py-3 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-lg transition-colors"
+                    className="w-full px-0 py-3 sm:py-3.5 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-base sm:text-lg transition-colors bg-transparent"
                     placeholder={t.contactSection.emailPlaceholder}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm uppercase tracking-wide text-gray-400 mb-3">{t.contactSection.projectTypeLabel}</label>
+                  <label className="block text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-2 sm:mb-3">{t.contactSection.projectTypeLabel}</label>
                   <select
                     name="project_type"
                     value={formData.project_type}
                     onChange={handleFormChange}
                     required
-                    className="w-full px-0 py-3 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-lg bg-transparent transition-colors"
+                    className="w-full px-0 py-3 sm:py-3.5 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-base sm:text-lg bg-transparent transition-colors"
                   >
                     <option value="new_installation">{t.contactSection.option1}</option>
                     <option value="turbine_upgrade">{t.contactSection.option2}</option>
@@ -403,14 +421,14 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <label className="block text-sm uppercase tracking-wide text-gray-400 mb-3">{t.contactSection.messageLabel}</label>
+                  <label className="block text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-2 sm:mb-3">{t.contactSection.messageLabel}</label>
                   <textarea
                     name="message"
                     value={formData.message}
                     onChange={handleFormChange}
                     required
                     rows={4}
-                    className="w-full px-0 py-3 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-lg resize-none transition-colors"
+                    className="w-full px-0 py-3 sm:py-3.5 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-base sm:text-lg resize-none transition-colors bg-transparent"
                     placeholder={t.contactSection.messagePlaceholder}
                   ></textarea>
                 </div>
@@ -418,7 +436,7 @@ export default function Home() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full bg-gray-900 text-white py-4 text-sm font-medium tracking-wide hover:bg-gray-800 transition-colors disabled:bg-gray-400 mt-8"
+                  className="w-full bg-gray-900 text-white py-3.5 sm:py-4 text-sm font-medium tracking-wide hover:bg-gray-800 transition-colors disabled:bg-gray-400 mt-6 sm:mt-8"
                 >
                   {submitting ? 'Sending...' : t.contactSection.sendButton}
                 </button>
@@ -428,20 +446,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER - Minimal */}
-      <footer className="py-16 bg-white">
-        <div className="container mx-auto px-6 lg:px-16 xl:px-24">
-          <div className="grid lg:grid-cols-4 gap-12 mb-16">
-            <div className="lg:col-span-2">
-              <h4 className="text-xl font-medium text-gray-900 mb-4">Rasim Rama</h4>
-              <p className="text-gray-500 max-w-sm leading-relaxed">
+      {/* FOOTER - Responsive Minimal */}
+      <footer className="py-12 sm:py-14 md:py-16 bg-white">
+        <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24">
+          {/* Footer Grid: 1 col mobile, 2 col tablet, 4 col desktop */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12 mb-10 sm:mb-12 lg:mb-16">
+            <div className="col-span-2 sm:col-span-2 lg:col-span-2">
+              <h4 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">Rasim Rama</h4>
+              <p className="text-sm sm:text-base text-gray-500 max-w-sm leading-relaxed">
                 {t.footer.description}
               </p>
             </div>
 
             <div>
-              <h4 className="text-sm uppercase tracking-wide text-gray-400 mb-4">{t.footer.servicesTitle}</h4>
-              <ul className="space-y-3 text-gray-600">
+              <h4 className="text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-3 sm:mb-4">{t.footer.servicesTitle}</h4>
+              <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-gray-600">
                 <li>Turbine Installation</li>
                 <li>Assembly</li>
                 <li>Maintenance</li>
@@ -450,8 +469,8 @@ export default function Home() {
             </div>
 
             <div>
-              <h4 className="text-sm uppercase tracking-wide text-gray-400 mb-4">{t.footer.companyTitle}</h4>
-              <ul className="space-y-3 text-gray-600">
+              <h4 className="text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-3 sm:mb-4">{t.footer.companyTitle}</h4>
+              <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-gray-600">
                 <li>About</li>
                 <li>Projects</li>
                 <li>Contact</li>
@@ -459,8 +478,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="pt-8 border-t border-gray-100 text-center">
-            <p className="text-sm text-gray-400">{t.footer.copyright}</p>
+          <div className="pt-6 sm:pt-8 border-t border-gray-100 text-center">
+            <p className="text-xs sm:text-sm text-gray-400">{t.footer.copyright}</p>
           </div>
         </div>
       </footer>

@@ -32,7 +32,7 @@ const Navbar = () => {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 overflow-hidden ${
         isScrolled
           ? 'bg-gradient-to-r from-[#1F5EFF]/90 to-[#0047E1]/90 backdrop-blur-lg shadow-lg'
           : 'bg-gradient-to-r from-[#1F5EFF] to-[#0047E1]'
@@ -41,7 +41,7 @@ const Navbar = () => {
         borderRadius: isScrolled ? '0 0 16px 16px' : '0',
       }}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 lg:h-24">
           {/* Logo - Left */}
           <motion.div
@@ -55,7 +55,7 @@ const Navbar = () => {
               alt="Rama Rasim Logo"
               width={480}
               height={120}
-              className="h-24 lg:h-28 w-auto"
+              className="h-16 sm:h-20 lg:h-28 w-auto max-w-[180px] sm:max-w-[240px] lg:max-w-none object-contain"
               priority
             />
           </motion.div>
