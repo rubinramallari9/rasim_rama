@@ -1,27 +1,29 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState, useCallback, useMemo, memo } from 'react';
 import { useLanguage } from './context/LanguageContext';
 import Link from 'next/link';
 import Image from 'next/image';
+import { submitContact } from '@/lib/api';
+import { validateContactForm, canSubmit, recordSubmission } from '@/lib/validation';
 
 // Project interface
 interface Project {
   id: number;
   name: string;
   location: string;
-  capaticy: number;
+  capacity: number;
   state: string;
   description: string;
 }
 
-// Project data
+// Static project data - defined outside component to avoid recreation
 const PROJECTS: Project[] = [
   {
     id: 1,
     name: "Valbona Hydropower Plant",
     location: "Valbona Valley, Albania",
-    capaticy: 15.5,
+    capacity: 15.5,
     state: "Operational",
     description: "Run-of-river hydroelectric facility harnessing the Valbona River in northern Albania."
   },
@@ -29,7 +31,7 @@ const PROJECTS: Project[] = [
     id: 2,
     name: "Drin River Complex",
     location: "Shkodër Region, Albania",
-    capaticy: 28.0,
+    capacity: 28.0,
     state: "Under Construction",
     description: "Large-scale hydroelectric project featuring advanced turbine technology."
   },
@@ -37,48 +39,151 @@ const PROJECTS: Project[] = [
     id: 3,
     name: "Osumi Cascade",
     location: "Skrapar, Albania",
-    capaticy: 12.3,
+    capacity: 12.3,
     state: "Planning",
     description: "Cascading hydropower system utilizing the Osumi Canyon elevation."
   }
 ];
+
+// Memoized Project Card component to prevent unnecessary re-renders
+const ProjectCard = memo(function ProjectCard({
+  project,
+  index
+}: {
+  project: Project;
+  index: number;
+}) {
+  return (
+    <Link href={`/projects/${project.id}`}>
+      <div className="group py-8 sm:py-10 md:py-12 border-b border-gray-100 cursor-pointer">
+        <div className="flex flex-col lg:grid lg:grid-cols-12 lg:gap-6 lg:items-center">
+          <div className="hidden lg:block lg:col-span-1">
+            <span className="text-sm text-gray-300 font-mono">{String(index + 1).padStart(2, '0')}</span>
+          </div>
+          <div className="lg:col-span-4 mb-4 lg:mb-0">
+            <div className="flex items-start gap-3 lg:block">
+              <span className="text-xs text-gray-300 font-mono lg:hidden mt-1.5">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <div>
+                <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-gray-900 group-hover:text-gray-600 transition-colors mb-1 sm:mb-2">
+                  {project.name}
+                </h3>
+                <p className="text-sm sm:text-base text-gray-400">{project.location}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-8 sm:gap-12 lg:contents pl-7 lg:pl-0">
+            <div className="lg:col-span-2">
+              <p className="text-xs uppercase tracking-wide text-gray-400 mb-0.5 sm:mb-1">Capacity</p>
+              <p className="text-base sm:text-lg font-medium text-gray-900">{project.capacity} MW</p>
+            </div>
+            <div className="lg:col-span-2">
+              <p className="text-xs uppercase tracking-wide text-gray-400 mb-0.5 sm:mb-1">Status</p>
+              <p className="text-base sm:text-lg text-gray-900">{project.state}</p>
+            </div>
+          </div>
+          <div className="lg:col-span-3 flex items-center lg:justify-end mt-4 lg:mt-0 pl-7 lg:pl-0">
+            <span className="text-gray-300 group-hover:text-gray-900 transition-colors text-xl sm:text-2xl">→</span>
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+});
 
 export default function Home() {
   const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    project_type: 'new_installation',
+    project_type: 'turbine_installation',
     message: '',
   });
   const [formStatus, setFormStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({
     type: null,
     message: '',
   });
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
 
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  // Memoized handler to prevent recreation on every render
+  const handleFormChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+    // Clear error for this field when user types
+    setFormErrors(prev => ({ ...prev, [name]: '' }));
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Memoized submit handler with validation
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
     setFormStatus({ type: null, message: '' });
+    setFormErrors({});
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log('Contact form submitted:', formData);
+    // Client-side rate limiting
+    if (!canSubmit()) {
+      setFormStatus({
+        type: 'error',
+        message: 'Too many submissions. Please wait a moment before trying again.',
+      });
+      return;
+    }
 
-    setFormStatus({
-      type: 'success',
-      message: 'Thank you for your message. We will respond within 24 hours.',
-    });
-    setFormData({ name: '', email: '', project_type: 'new_installation', message: '' });
-    setSubmitting(false);
-  };
+    // Client-side validation
+    const validation = validateContactForm(formData);
+    if (!validation.valid) {
+      setFormErrors(validation.errors);
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      recordSubmission();
+      const response = await submitContact(formData);
+      setFormStatus({
+        type: 'success',
+        message: response.message || 'Thank you for your message. We will contact you soon.',
+      });
+      setFormData({ name: '', email: '', project_type: 'turbine_installation', message: '' });
+    } catch (error) {
+      setFormStatus({
+        type: 'error',
+        message: error instanceof Error ? error.message : 'Something went wrong. Please try again.',
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  }, [formData]);
+
+  // Memoized scroll handlers
+  const scrollToProjects = useCallback(() => {
+    document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
+  const scrollToContact = useCallback(() => {
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
+  // Memoized services data
+  const services = useMemo(() => [
+    { number: '01', title: t.services.service1Title, description: t.services.service1Desc },
+    { number: '02', title: t.services.service2Title, description: t.services.service2Desc },
+    { number: '03', title: t.services.service3Title, description: t.services.service3Desc },
+    { number: '04', title: t.services.service4Title, description: t.services.service4Desc }
+  ], [t.services]);
+
+  // Memoized specs data
+  const specs = useMemo(() => [
+    { value: '15+', label: t.technical.spec1Label },
+    { value: '94.5%', label: t.technical.spec2Label },
+    { value: '2.5M', label: t.technical.spec3Label },
+    { value: '500 m³/s', label: t.technical.spec4Label },
+  ], [t.technical]);
 
   return (
     <div className="bg-white overflow-x-hidden w-full max-w-full">
@@ -106,13 +211,13 @@ export default function Home() {
               {/* Buttons - Stack on mobile, row on tablet+ */}
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
                 <button
-                  onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+                  onClick={scrollToProjects}
                   className="px-6 sm:px-8 py-3.5 sm:py-4 bg-gray-900 text-white text-sm font-medium tracking-wide hover:bg-gray-800 transition-colors"
                 >
                   {t.hero.viewProjects}
                 </button>
                 <button
-                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                  onClick={scrollToContact}
                   className="px-6 sm:px-8 py-3.5 sm:py-4 border border-gray-300 text-gray-900 text-sm font-medium tracking-wide hover:border-gray-900 transition-colors"
                 >
                   {t.hero.contactUs}
@@ -127,8 +232,10 @@ export default function Home() {
                   src="/mainscreenimage2.png"
                   alt="Hydropower facility"
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                   className="object-cover"
                   priority
+                  quality={85}
                 />
               </div>
             </div>
@@ -185,12 +292,7 @@ export default function Home() {
           </div>
 
           <div className="border-t border-gray-200">
-            {[
-              { number: '01', title: t.services.service1Title, description: t.services.service1Desc },
-              { number: '02', title: t.services.service2Title, description: t.services.service2Desc },
-              { number: '03', title: t.services.service3Title, description: t.services.service3Desc },
-              { number: '04', title: t.services.service4Title, description: t.services.service4Desc }
-            ].map((service, index) => (
+            {services.map((service, index) => (
               <div key={index} className="group border-b border-gray-200 py-6 sm:py-8 md:py-10 lg:py-12">
                 {/* Mobile: Stacked layout / Desktop: Grid layout */}
                 <div className="flex flex-col md:grid md:grid-cols-12 md:gap-4 md:items-baseline">
@@ -226,50 +328,7 @@ export default function Home() {
 
           <div className="space-y-0">
             {PROJECTS.map((project, index) => (
-              <Link key={project.id} href={`/projects/${project.id}`}>
-                <div className="group py-8 sm:py-10 md:py-12 border-b border-gray-100 cursor-pointer">
-                  {/* Desktop: Single row grid / Mobile: Stacked */}
-                  <div className="flex flex-col lg:grid lg:grid-cols-12 lg:gap-6 lg:items-center">
-                    {/* Number - Hidden on mobile */}
-                    <div className="hidden lg:block lg:col-span-1">
-                      <span className="text-sm text-gray-300 font-mono">{String(index + 1).padStart(2, '0')}</span>
-                    </div>
-
-                    {/* Name & Location */}
-                    <div className="lg:col-span-4 mb-4 lg:mb-0">
-                      <div className="flex items-start gap-3 lg:block">
-                        <span className="text-xs text-gray-300 font-mono lg:hidden mt-1.5">
-                          {String(index + 1).padStart(2, '0')}
-                        </span>
-                        <div>
-                          <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-gray-900 group-hover:text-gray-600 transition-colors mb-1 sm:mb-2">
-                            {project.name}
-                          </h3>
-                          <p className="text-sm sm:text-base text-gray-400">{project.location}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Metadata: Capacity & Status */}
-                    <div className="flex gap-8 sm:gap-12 lg:contents pl-7 lg:pl-0">
-                      <div className="lg:col-span-2">
-                        <p className="text-xs uppercase tracking-wide text-gray-400 mb-0.5 sm:mb-1">Capacity</p>
-                        <p className="text-base sm:text-lg font-medium text-gray-900">{project.capaticy} MW</p>
-                      </div>
-
-                      <div className="lg:col-span-2">
-                        <p className="text-xs uppercase tracking-wide text-gray-400 mb-0.5 sm:mb-1">Status</p>
-                        <p className="text-base sm:text-lg text-gray-900">{project.state}</p>
-                      </div>
-                    </div>
-
-                    {/* Arrow */}
-                    <div className="lg:col-span-3 flex items-center lg:justify-end mt-4 lg:mt-0 pl-7 lg:pl-0">
-                      <span className="text-gray-300 group-hover:text-gray-900 transition-colors text-xl sm:text-2xl">→</span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
+              <ProjectCard key={project.id} project={project} index={index} />
             ))}
           </div>
         </div>
@@ -294,12 +353,7 @@ export default function Home() {
 
           {/* Specs Grid - 2x2 on mobile, 4-col on desktop */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-8 py-8 sm:py-10 md:py-12 border-t border-gray-800">
-            {[
-              { value: '15+', label: t.technical.spec1Label },
-              { value: '94.5%', label: t.technical.spec2Label },
-              { value: '2.5M', label: t.technical.spec3Label },
-              { value: '500 m³/s', label: t.technical.spec4Label },
-            ].map((spec, index) => (
+            {specs.map((spec, index) => (
               <div key={index}>
                 <div className="text-3xl sm:text-4xl lg:text-5xl font-light mb-2 sm:mb-3">{spec.value}</div>
                 <div className="text-xs sm:text-sm uppercase tracking-wide text-gray-500">{spec.label}</div>
@@ -386,9 +440,13 @@ export default function Home() {
                     value={formData.name}
                     onChange={handleFormChange}
                     required
-                    className="w-full px-0 py-3 sm:py-3.5 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-base sm:text-lg transition-colors bg-transparent"
+                    maxLength={100}
+                    className={`w-full px-0 py-3 sm:py-3.5 border-0 border-b focus:ring-0 text-base sm:text-lg transition-colors bg-transparent ${
+                      formErrors.name ? 'border-red-500' : 'border-gray-200 focus:border-gray-900'
+                    }`}
                     placeholder={t.contactSection.namePlaceholder}
                   />
+                  {formErrors.name && <p className="text-red-500 text-xs mt-1">{formErrors.name}</p>}
                 </div>
 
                 <div>
@@ -399,9 +457,13 @@ export default function Home() {
                     value={formData.email}
                     onChange={handleFormChange}
                     required
-                    className="w-full px-0 py-3 sm:py-3.5 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-base sm:text-lg transition-colors bg-transparent"
+                    maxLength={254}
+                    className={`w-full px-0 py-3 sm:py-3.5 border-0 border-b focus:ring-0 text-base sm:text-lg transition-colors bg-transparent ${
+                      formErrors.email ? 'border-red-500' : 'border-gray-200 focus:border-gray-900'
+                    }`}
                     placeholder={t.contactSection.emailPlaceholder}
                   />
+                  {formErrors.email && <p className="text-red-500 text-xs mt-1">{formErrors.email}</p>}
                 </div>
 
                 <div>
@@ -413,10 +475,10 @@ export default function Home() {
                     required
                     className="w-full px-0 py-3 sm:py-3.5 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-base sm:text-lg bg-transparent transition-colors"
                   >
-                    <option value="new_installation">{t.contactSection.option1}</option>
-                    <option value="turbine_upgrade">{t.contactSection.option2}</option>
+                    <option value="turbine_installation">{t.contactSection.option1}</option>
+                    <option value="assembly">{t.contactSection.option2}</option>
                     <option value="maintenance">{t.contactSection.option3}</option>
-                    <option value="consultation">{t.contactSection.option4}</option>
+                    <option value="generator_bearing">{t.contactSection.option4}</option>
                   </select>
                 </div>
 
@@ -428,9 +490,13 @@ export default function Home() {
                     onChange={handleFormChange}
                     required
                     rows={4}
-                    className="w-full px-0 py-3 sm:py-3.5 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-base sm:text-lg resize-none transition-colors bg-transparent"
+                    maxLength={5000}
+                    className={`w-full px-0 py-3 sm:py-3.5 border-0 border-b focus:ring-0 text-base sm:text-lg resize-none transition-colors bg-transparent ${
+                      formErrors.message ? 'border-red-500' : 'border-gray-200 focus:border-gray-900'
+                    }`}
                     placeholder={t.contactSection.messagePlaceholder}
                   ></textarea>
+                  {formErrors.message && <p className="text-red-500 text-xs mt-1">{formErrors.message}</p>}
                 </div>
 
                 <button
