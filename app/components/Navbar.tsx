@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useLanguage } from '../context/LanguageContext';
 
 const Navbar = () => {
@@ -22,6 +23,7 @@ const Navbar = () => {
   const navLinks = [
     { name: t.nav.home, href: '#home' },
     { name: t.nav.projects, href: '#projects' },
+    { name: t.nav.gallery, href: '/gallery', isPage: true },
     { name: t.nav.technology, href: '#technology' },
     { name: t.nav.about, href: '#about' },
     { name: t.nav.contact, href: '#contact' },
@@ -63,29 +65,53 @@ const Navbar = () => {
           {/* Desktop Navigation - Center/Right */}
           <div className="hidden lg:flex items-center space-x-12">
             {navLinks.map((link, index) => (
-              <motion.a
-                key={link.name}
-                href={link.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  const targetId = link.href.replace('#', '');
-                  document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.6,
-                  delay: 0.3 + index * 0.1,
-                  ease: 'easeOut',
-                }}
-                className="relative text-white font-bold text-sm tracking-wide group cursor-pointer"
-              >
-                {link.name}
-                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-white transition-all duration-300 ease-out group-hover:w-full" />
-                <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span className="absolute inset-0 blur-sm bg-white/20" />
-                </span>
-              </motion.a>
+              link.isPage ? (
+                <motion.div
+                  key={link.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.3 + index * 0.1,
+                    ease: 'easeOut',
+                  }}
+                >
+                  <Link
+                    href={link.href}
+                    className="relative text-white font-bold text-sm tracking-wide group cursor-pointer"
+                  >
+                    {link.name}
+                    <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-white transition-all duration-300 ease-out group-hover:w-full" />
+                    <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <span className="absolute inset-0 blur-sm bg-white/20" />
+                    </span>
+                  </Link>
+                </motion.div>
+              ) : (
+                <motion.a
+                  key={link.name}
+                  href={link.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const targetId = link.href.replace('#', '');
+                    document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.3 + index * 0.1,
+                    ease: 'easeOut',
+                  }}
+                  className="relative text-white font-bold text-sm tracking-wide group cursor-pointer"
+                >
+                  {link.name}
+                  <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-white transition-all duration-300 ease-out group-hover:w-full" />
+                  <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="absolute inset-0 blur-sm bg-white/20" />
+                  </span>
+                </motion.a>
+              )
             ))}
           </div>
 
@@ -169,24 +195,41 @@ const Navbar = () => {
               <div className="flex flex-col p-8 space-y-6">
                 {/* Mobile Nav Links */}
                 {navLinks.map((link, index) => (
-                  <motion.a
-                    key={link.name}
-                    href={link.href}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setIsMobileMenuOpen(false);
-                      const targetId = link.href.replace('#', '');
-                      setTimeout(() => {
-                        document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
-                      }, 300);
-                    }}
-                    className="text-white font-bold text-lg tracking-wide py-3 border-b border-white/20 hover:border-white transition-all duration-300 cursor-pointer"
-                  >
-                    {link.name}
-                  </motion.a>
+                  link.isPage ? (
+                    <motion.div
+                      key={link.name}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                    >
+                      <Link
+                        href={link.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block text-white font-bold text-lg tracking-wide py-3 border-b border-white/20 hover:border-white transition-all duration-300 cursor-pointer"
+                      >
+                        {link.name}
+                      </Link>
+                    </motion.div>
+                  ) : (
+                    <motion.a
+                      key={link.name}
+                      href={link.href}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setIsMobileMenuOpen(false);
+                        const targetId = link.href.replace('#', '');
+                        setTimeout(() => {
+                          document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+                        }, 300);
+                      }}
+                      className="text-white font-bold text-lg tracking-wide py-3 border-b border-white/20 hover:border-white transition-all duration-300 cursor-pointer"
+                    >
+                      {link.name}
+                    </motion.a>
+                  )
                 ))}
 
                 {/* Mobile Language Toggle */}

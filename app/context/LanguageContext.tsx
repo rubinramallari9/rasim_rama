@@ -11,6 +11,7 @@ interface Translations {
     technology: string;
     about: string;
     contact: string;
+    gallery: string;
     requestProposal: string;
   };
   hero: {
@@ -131,6 +132,15 @@ interface Translations {
     connectTitle: string;
     copyright: string;
   };
+  gallery: {
+    heading: string;
+    subheading: string;
+    category1: string;
+    category2: string;
+    allWork: string;
+    viewProject: string;
+    close: string;
+  };
 }
 
 const translations: Record<Language, Translations> = {
@@ -141,6 +151,7 @@ const translations: Record<Language, Translations> = {
       technology: 'Technology',
       about: 'About Us',
       contact: 'Contact',
+      gallery: 'Gallery',
       requestProposal: 'Request Proposal',
     },
     hero: {
@@ -261,6 +272,15 @@ const translations: Record<Language, Translations> = {
       connectTitle: 'Connect',
       copyright: '© 2025 Hydropower Engineering. All rights reserved.',
     },
+    gallery: {
+      heading: 'Our Work',
+      subheading: 'A showcase of our hydropower engineering projects and installations',
+      category1: 'Infrastructure',
+      category2: 'Turbine Installation',
+      allWork: 'All Projects',
+      viewProject: 'View Details',
+      close: 'Close',
+    },
   },
   sq: {
     nav: {
@@ -269,6 +289,7 @@ const translations: Record<Language, Translations> = {
       technology: 'Teknologjia',
       about: 'Rreth Nesh',
       contact: 'Kontakti',
+      gallery: 'Galeria',
       requestProposal: 'Kërko Propozim',
     },
     hero: {
@@ -388,6 +409,15 @@ const translations: Record<Language, Translations> = {
       companyTitle: 'Kompania',
       connectTitle: 'Lidhu',
       copyright: '© 2025 Inxhinieria Hidroenergjetike. Të gjitha të drejtat e rezervuara.',
+    },
+    gallery: {
+      heading: 'Puna Jonë',
+      subheading: 'Një shfaqje e projekteve tona të inxhinierisë hidroenergjetike dhe instalimeve',
+      category1: 'Infrastrukturë',
+      category2: 'Instalimi i Turbinave',
+      allWork: 'Të Gjitha Projektet',
+      viewProject: 'Shiko Detajet',
+      close: 'Mbyll',
     },
   },
 };
