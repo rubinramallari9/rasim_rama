@@ -1,0 +1,27 @@
+{
+  "name": "Rasim Rama Hydropower Engineering",
+  "short_name": "Rasim Rama",
+  "description": "Professional hydropower turbine installation, assembly, maintenance, and generator repairs in Albania and beyond.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1f2937",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["business", "industrial", "engineering"],
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
