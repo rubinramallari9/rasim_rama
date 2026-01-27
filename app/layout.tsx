@@ -27,11 +27,12 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   // Basic metadata
   title: {
-    default: "Rasim Rama | Hydropower Engineering Services in Albania",
+    default: "Rasim Rama | Hydropower Engineering Services - Albania, Italy, Germany, USA, Balkans",
     template: "%s | Rasim Rama Hydropower",
   },
-  description: "Professional hydropower turbine installation, assembly, maintenance, and generator repairs. 15+ years of engineering excellence serving Albania and the Balkans. Francis, Kaplan & Pelton turbine specialists.",
+  description: "Professional hydropower turbine installation, assembly, maintenance, and generator repairs. 15+ years of engineering excellence serving Albania, Italy, Germany, USA, Kosovo, Bulgaria, and Greece. Francis, Kaplan & Pelton turbine specialists.",
   keywords: [
+    // Core services
     "hydropower engineering",
     "turbine installation",
     "hydroelectric plant",
@@ -40,13 +41,47 @@ export const metadata: Metadata = {
     "Pelton turbine",
     "generator repair",
     "hydropower maintenance",
-    "Albania hydropower",
-    "Balkans renewable energy",
-    "run-of-river hydropower",
     "turbine assembly",
-    "hydrocentral",
-    "clean energy Albania",
     "renewable energy services",
+    // Albania
+    "Albania hydropower",
+    "hidrocentral Shqipëri",
+    "turbina hidroelektrike",
+    "energji e rinovueshme",
+    // Italy
+    "Italy hydropower",
+    "centrale idroelettrica Italia",
+    "turbine idrauliche",
+    "manutenzione turbine Italia",
+    "energia idroelettrica",
+    // Germany
+    "Germany hydropower",
+    "Wasserkraftwerk Deutschland",
+    "Turbinen Installation",
+    "Wasserkraft Engineering",
+    "erneuerbare Energie",
+    // USA
+    "USA hydropower",
+    "hydroelectric power USA",
+    "turbine installation America",
+    "renewable energy United States",
+    // Kosovo
+    "Kosovo hydropower",
+    "hidrocentral Kosovë",
+    "energji hidroelektrike",
+    // Bulgaria
+    "Bulgaria hydropower",
+    "водноелектрическа централа",
+    "хидроенергия България",
+    "ВЕЦ България",
+    // Greece
+    "Greece hydropower",
+    "υδροηλεκτρικό εργοστάσιο",
+    "υδροενέργεια Ελλάδα",
+    // Regional
+    "Balkans renewable energy",
+    "European hydropower",
+    "run-of-river hydropower",
   ],
   authors: [{ name: "Rasim Rama", url: siteUrl }],
   creator: "Rasim Rama",
@@ -59,16 +94,20 @@ export const metadata: Metadata = {
     languages: {
       "en": "/",
       "sq": "/?lang=sq",
+      "de": "/?lang=de",
+      "it": "/?lang=it",
+      "el": "/?lang=el",
+      "bg": "/?lang=bg",
     },
   },
 
   // Open Graph metadata for social sharing
   openGraph: {
-    title: "Rasim Rama | Hydropower Engineering Services",
-    description: "Professional turbine installation, assembly, maintenance, and generator repairs. 15+ years of hydropower engineering excellence in Albania.",
+    title: "Rasim Rama | International Hydropower Engineering Services",
+    description: "Professional turbine installation, assembly, maintenance, and generator repairs. Serving Albania, Italy, Germany, USA, Kosovo, Bulgaria, and Greece with 15+ years of excellence.",
     type: "website",
     locale: "en_US",
-    alternateLocale: ["sq_AL"],
+    alternateLocale: ["sq_AL", "de_DE", "it_IT", "el_GR", "bg_BG"],
     url: siteUrl,
     siteName: "Rasim Rama Hydropower",
     images: [
@@ -76,7 +115,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Rasim Rama Hydropower Engineering - Professional turbine installation and maintenance services",
+        alt: "Rasim Rama Hydropower Engineering - International turbine installation and maintenance services",
       },
     ],
   },
@@ -84,8 +123,8 @@ export const metadata: Metadata = {
   // Twitter/X card metadata
   twitter: {
     card: "summary_large_image",
-    title: "Rasim Rama | Hydropower Engineering",
-    description: "Professional turbine installation, assembly, maintenance, and generator repairs in Albania and beyond.",
+    title: "Rasim Rama | International Hydropower Engineering",
+    description: "Professional turbine installation serving Albania, Italy, Germany, USA, Kosovo, Bulgaria, and Greece.",
     images: ["/og-image.png"],
     creator: "@rasimrama",
   },
@@ -113,12 +152,16 @@ export const metadata: Metadata = {
   // App category
   category: "Engineering Services",
 
-  // Additional metadata
+  // Additional metadata for international targeting
   other: {
     "geo.region": "AL",
     "geo.placename": "Tirana, Albania",
     "business:contact_data:locality": "Tirana",
     "business:contact_data:country_name": "Albania",
+    // International service areas
+    "distribution": "global",
+    "target": "Albania, Italy, Germany, USA, Kosovo, Bulgaria, Greece",
+    "coverage": "Europe, United States, Balkans",
   },
 };
 
@@ -127,13 +170,19 @@ const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Rasim Rama Hydropower Engineering",
-  alternateName: "Rasim Rama",
+  alternateName: ["Rasim Rama", "Rasim Rama Hidrocentrale"],
   url: siteUrl,
   logo: `${siteUrl}/rasimramalogo.png`,
-  description: "Professional hydropower turbine installation, assembly, maintenance, and generator repairs. 15+ years of engineering excellence in Albania and the Balkans.",
+  description: "Professional hydropower turbine installation, assembly, maintenance, and generator repairs. 15+ years of engineering excellence serving Albania, Italy, Germany, USA, Kosovo, Bulgaria, and Greece.",
   foundingDate: "2009",
   areaServed: [
-    { "@type": "Country", name: "Albania" },
+    { "@type": "Country", name: "Albania", sameAs: "https://en.wikipedia.org/wiki/Albania" },
+    { "@type": "Country", name: "Italy", sameAs: "https://en.wikipedia.org/wiki/Italy" },
+    { "@type": "Country", name: "Germany", sameAs: "https://en.wikipedia.org/wiki/Germany" },
+    { "@type": "Country", name: "United States", sameAs: "https://en.wikipedia.org/wiki/United_States" },
+    { "@type": "Country", name: "Kosovo", sameAs: "https://en.wikipedia.org/wiki/Kosovo" },
+    { "@type": "Country", name: "Bulgaria", sameAs: "https://en.wikipedia.org/wiki/Bulgaria" },
+    { "@type": "Country", name: "Greece", sameAs: "https://en.wikipedia.org/wiki/Greece" },
     { "@type": "Place", name: "Balkans" },
     { "@type": "Place", name: "Europe" },
   ],
@@ -142,12 +191,15 @@ const organizationSchema = {
     addressLocality: "Tirana",
     addressCountry: "AL",
   },
-  contactPoint: {
-    "@type": "ContactPoint",
-    contactType: "customer service",
-    email: "info@rasimrama.com",
-    availableLanguage: ["English", "Albanian"],
-  },
+  contactPoint: [
+    {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      email: "info@rasimrama.com",
+      availableLanguage: ["English", "Albanian", "Italian", "German", "Greek", "Bulgarian"],
+      areaServed: ["AL", "IT", "DE", "US", "XK", "BG", "GR"],
+    },
+  ],
   sameAs: [
     // Add your social media profiles here
     // "https://www.linkedin.com/company/rasimrama",
@@ -162,10 +214,13 @@ const organizationSchema = {
     "Generator Repair",
     "Hydroelectric Power Plants",
     "Renewable Energy",
+    "Run-of-River Hydropower",
+    "Storage Hydropower",
+    "Cascade Hydropower Systems",
   ],
 };
 
-// JSON-LD for Local Business (Service Provider)
+// JSON-LD for Local Business (Service Provider) with international reach
 const localBusinessSchema = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
@@ -184,6 +239,15 @@ const localBusinessSchema = {
     latitude: 41.3275,
     longitude: 19.8187,
   },
+  areaServed: [
+    { "@type": "Country", name: "Albania" },
+    { "@type": "Country", name: "Italy" },
+    { "@type": "Country", name: "Germany" },
+    { "@type": "Country", name: "United States" },
+    { "@type": "Country", name: "Kosovo" },
+    { "@type": "Country", name: "Bulgaria" },
+    { "@type": "Country", name: "Greece" },
+  ],
   priceRange: "$$$$",
   openingHoursSpecification: {
     "@type": "OpeningHoursSpecification",
@@ -191,13 +255,44 @@ const localBusinessSchema = {
     opens: "08:00",
     closes: "17:00",
   },
-  serviceType: [
-    "Turbine Installation",
-    "Hydropower Assembly",
-    "Generator Maintenance",
-    "Generator Bearing Replacement",
-    "Hydroelectric Plant Services",
-  ],
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Hydropower Engineering Services",
+    itemListElement: [
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Turbine Installation",
+          description: "Professional installation of Francis, Kaplan, and Pelton turbines",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Generator Maintenance",
+          description: "Comprehensive maintenance and repair services for hydroelectric generators",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Hydropower Assembly",
+          description: "Complete assembly services for hydroelectric power plant components",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Generator Bearing Replacement",
+          description: "Specialized bearing replacement and repair for hydroelectric generators",
+        },
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
