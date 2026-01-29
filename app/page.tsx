@@ -188,8 +188,8 @@ export default function Home() {
   return (
     <div className="bg-white overflow-x-hidden w-full max-w-full">
       {/* HERO - Responsive Editorial */}
-      <section id="home" className="min-h-screen flex items-center border-b border-gray-100">
-        <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24 py-16 sm:py-20 lg:py-24">
+      <section id="home" className="min-h-screen flex items-center border-b border-gray-100 pt-16 sm:pt-18 lg:pt-20">
+        <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24 py-10 sm:py-16 lg:py-20">
           <div className="grid lg:grid-cols-2 gap-10 md:gap-14 lg:gap-16 xl:gap-24 items-center">
             {/* Left - Typography */}
             <div className="space-y-6 sm:space-y-8 order-2 lg:order-1">
@@ -212,13 +212,13 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
                 <button
                   onClick={scrollToProjects}
-                  className="px-6 sm:px-8 py-3.5 sm:py-4 bg-gray-900 text-white text-sm font-medium tracking-wide hover:bg-gray-800 transition-colors"
+                  className="h-12 sm:h-14 px-6 sm:px-8 bg-gray-900 text-white text-sm font-medium tracking-wide hover:bg-gray-800 active:bg-gray-950 transition-colors"
                 >
                   {t.hero.viewProjects}
                 </button>
                 <button
                   onClick={scrollToContact}
-                  className="px-6 sm:px-8 py-3.5 sm:py-4 border border-gray-300 text-gray-900 text-sm font-medium tracking-wide hover:border-gray-900 transition-colors"
+                  className="h-12 sm:h-14 px-6 sm:px-8 border border-gray-300 text-gray-900 text-sm font-medium tracking-wide hover:border-gray-900 active:bg-gray-100 transition-colors"
                 >
                   {t.hero.contactUs}
                 </button>
@@ -502,7 +502,7 @@ export default function Home() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full bg-gray-900 text-white py-3.5 sm:py-4 text-sm font-medium tracking-wide hover:bg-gray-800 transition-colors disabled:bg-gray-400 mt-6 sm:mt-8"
+                  className="w-full h-12 sm:h-14 bg-gray-900 text-white text-sm font-medium tracking-wide hover:bg-gray-800 active:bg-gray-950 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed mt-6 sm:mt-8"
                 >
                   {submitting ? 'Sending...' : t.contactSection.sendButton}
                 </button>
@@ -526,20 +526,48 @@ export default function Home() {
 
             <div>
               <h4 className="text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-3 sm:mb-4">{t.footer.servicesTitle}</h4>
-              <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-gray-600">
-                <li>Turbine Installation</li>
-                <li>Assembly</li>
-                <li>Maintenance</li>
-                <li>Repairs</li>
+              <ul className="space-y-1 text-sm sm:text-base">
+                <li>
+                  <a href="#services" className="block py-2 text-gray-600 hover:text-gray-900 active:text-gray-900 transition-colors">
+                    Turbine Installation
+                  </a>
+                </li>
+                <li>
+                  <a href="#services" className="block py-2 text-gray-600 hover:text-gray-900 active:text-gray-900 transition-colors">
+                    Assembly
+                  </a>
+                </li>
+                <li>
+                  <a href="#services" className="block py-2 text-gray-600 hover:text-gray-900 active:text-gray-900 transition-colors">
+                    Maintenance
+                  </a>
+                </li>
+                <li>
+                  <a href="#services" className="block py-2 text-gray-600 hover:text-gray-900 active:text-gray-900 transition-colors">
+                    Repairs
+                  </a>
+                </li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-3 sm:mb-4">{t.footer.companyTitle}</h4>
-              <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-gray-600">
-                <li>About</li>
-                <li>Projects</li>
-                <li>Contact</li>
+              <ul className="space-y-1 text-sm sm:text-base">
+                <li>
+                  <a href="#about" className="block py-2 text-gray-600 hover:text-gray-900 active:text-gray-900 transition-colors">
+                    About
+                  </a>
+                </li>
+                <li>
+                  <a href="#projects" className="block py-2 text-gray-600 hover:text-gray-900 active:text-gray-900 transition-colors">
+                    Projects
+                  </a>
+                </li>
+                <li>
+                  <a href="#contact" className="block py-2 text-gray-600 hover:text-gray-900 active:text-gray-900 transition-colors">
+                    Contact
+                  </a>
+                </li>
               </ul>
             </div>
           </div>

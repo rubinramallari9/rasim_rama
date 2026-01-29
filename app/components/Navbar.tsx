@@ -44,7 +44,7 @@ const Navbar = () => {
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 lg:h-24">
+        <div className="flex items-center justify-between h-16 sm:h-18 lg:h-20">
           {/* Logo - Left */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -55,9 +55,9 @@ const Navbar = () => {
             <Image
               src="/rasimramalogo.png"
               alt="Rama Rasim Logo"
-              width={480}
-              height={120}
-              className="h-16 sm:h-20 lg:h-28 w-auto max-w-[180px] sm:max-w-[240px] lg:max-w-none object-contain"
+              width={320}
+              height={80}
+              className="h-10 sm:h-12 lg:h-14 w-auto max-w-[140px] sm:max-w-[180px] lg:max-w-[220px] object-contain"
               priority
             />
           </motion.div>
@@ -181,7 +181,7 @@ const Navbar = () => {
               transition={{ duration: 0.3 }}
               onClick={() => setIsMobileMenuOpen(false)}
               className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm"
-              style={{ top: '80px' }}
+              style={{ top: '64px' }}
             />
 
             {/* Drawer */}
@@ -190,9 +190,9 @@ const Navbar = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ duration: 0.4, ease: 'easeInOut' }}
-              className="lg:hidden fixed right-0 top-20 bottom-0 w-[280px] bg-gradient-to-b from-[#1F5EFF] to-[#0047E1] shadow-2xl overflow-y-auto"
+              className="lg:hidden fixed right-0 top-16 bottom-0 w-[300px] bg-gradient-to-b from-[#1F5EFF] to-[#0047E1] shadow-2xl overflow-y-auto"
             >
-              <div className="flex flex-col p-8 space-y-6">
+              <div className="flex flex-col p-6 space-y-2">
                 {/* Mobile Nav Links */}
                 {navLinks.map((link, index) => (
                   link.isPage ? (
@@ -200,12 +200,12 @@ const Navbar = () => {
                       key={link.name}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
                     >
                       <Link
                         href={link.href}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="block text-white font-bold text-lg tracking-wide py-3 border-b border-white/20 hover:border-white transition-all duration-300 cursor-pointer"
+                        className="block text-white font-semibold text-base tracking-wide py-4 px-2 border-b border-white/10 hover:bg-white/10 active:bg-white/20 transition-all duration-200 cursor-pointer rounded-lg -mx-2"
                       >
                         {link.name}
                       </Link>
@@ -216,7 +216,7 @@ const Navbar = () => {
                       href={link.href}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
                       onClick={(e) => {
                         e.preventDefault();
                         setIsMobileMenuOpen(false);
@@ -225,37 +225,39 @@ const Navbar = () => {
                           document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
                         }, 300);
                       }}
-                      className="text-white font-bold text-lg tracking-wide py-3 border-b border-white/20 hover:border-white transition-all duration-300 cursor-pointer"
+                      className="block text-white font-semibold text-base tracking-wide py-4 px-2 border-b border-white/10 hover:bg-white/10 active:bg-white/20 transition-all duration-200 cursor-pointer rounded-lg -mx-2"
                     >
                       {link.name}
                     </motion.a>
                   )
                 ))}
 
-                {/* Mobile Language Toggle */}
-                <motion.button
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.5 }}
-                  onClick={toggleLanguage}
-                  className="mt-2 w-full px-8 py-3 text-white font-bold text-sm tracking-wide border-2 border-white rounded-lg hover:bg-white/10 transition-all duration-300"
-                >
-                  {language === 'en' ? 'Shqip (SQ)' : 'English (EN)'}
-                </motion.button>
+                <div className="pt-4 space-y-3">
+                  {/* Mobile Language Toggle */}
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.4 }}
+                    onClick={toggleLanguage}
+                    className="w-full h-12 text-white font-semibold text-sm tracking-wide border-2 border-white/50 rounded-lg hover:bg-white/10 active:bg-white/20 transition-all duration-200"
+                  >
+                    {language === 'en' ? 'Shqip (SQ)' : 'English (EN)'}
+                  </motion.button>
 
-                {/* Mobile CTA Button */}
-                <motion.button
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.6 }}
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="w-full px-8 py-4 text-white font-bold text-sm tracking-wide border-2 border-white rounded-lg hover:bg-white/10 transition-all duration-300"
-                >
-                  {t.nav.requestProposal}
-                </motion.button>
+                  {/* Mobile CTA Button */}
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.5 }}
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="w-full h-12 text-white font-semibold text-sm tracking-wide bg-white/20 border-2 border-white rounded-lg hover:bg-white/30 active:bg-white/40 transition-all duration-200"
+                  >
+                    {t.nav.requestProposal}
+                  </motion.button>
+                </div>
               </div>
             </motion.div>
           </>
