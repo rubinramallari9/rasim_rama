@@ -77,7 +77,7 @@ const Navbar = () => {
               alt="Rama Rasim Logo"
               width={320}
               height={80}
-              className="h-10 sm:h-12 lg:h-14 w-auto max-w-[140px] sm:max-w-[180px] lg:max-w-[220px] object-contain"
+              className="h-12 sm:h-14 lg:h-16 w-auto max-w-[160px] sm:max-w-[200px] lg:max-w-[260px] object-contain"
               priority
             />
           </motion.div>
