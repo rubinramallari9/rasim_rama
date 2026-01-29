@@ -2,11 +2,11 @@ import { MetadataRoute } from "next";
 
 // Use environment variable or Vercel's automatic URL
 // IMPORTANT: Set NEXT_PUBLIC_SITE_URL in Vercel Environment Variables
-// to match your exact production domain (e.g., https://www.rasimrama.com)
+// to match your exact production domain (e.g., https://ramarasim.com)
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ||
   (process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "https://www.rasimrama.com");
+    : "https://ramarasim.com");
 
 // Project IDs - in production, fetch these from your database/API
 const projectIds = [1, 2, 3];

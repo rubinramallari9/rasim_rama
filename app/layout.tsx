@@ -12,7 +12,7 @@ const geistSans = Geist({
 });
 
 // Base URL for the site - update this to your production domain
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://rasimrama.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ramarasim.com";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -195,7 +195,7 @@ const organizationSchema = {
     {
       "@type": "ContactPoint",
       contactType: "customer service",
-      email: "info@rasimrama.com",
+      email: "info@ramarasim.com",
       availableLanguage: ["English", "Albanian", "Italian", "German", "Greek", "Bulgarian"],
       areaServed: ["AL", "IT", "DE", "US", "XK", "BG", "GR"],
     },
@@ -228,7 +228,7 @@ const localBusinessSchema = {
   image: `${siteUrl}/rasimramalogo.png`,
   url: siteUrl,
   telephone: "+355 69 XXX XXXX",
-  email: "info@rasimrama.com",
+  email: "info@ramarasim.com",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Tirana",

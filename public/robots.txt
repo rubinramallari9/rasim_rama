@@ -1,5 +1,5 @@
 # Robots.txt for Rasim Rama Hydropower Engineering
-# https://www.rasimrama.com
+# https://ramarasim.com
 
 # Allow all search engines
 User-agent: *
@@ -14,4 +14,4 @@ Disallow: /admin/
 Crawl-delay: 1
 
 # Sitemap location
-Sitemap: https://www.rasimrama.com/sitemap.xml
+Sitemap: https://ramarasim.com/sitemap.xml

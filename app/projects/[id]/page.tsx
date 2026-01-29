@@ -51,7 +51,7 @@ const MOCK_PROJECTS: Project[] = [
   }
 ];
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://rasimrama.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ramarasim.com";
 
 // Generate dynamic metadata for each project page
 export async function generateMetadata({

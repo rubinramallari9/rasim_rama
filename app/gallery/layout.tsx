@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://rasimrama.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ramarasim.com";
 
 export const metadata: Metadata = {
   title: "Project Gallery | Hydropower Installation Portfolio",
