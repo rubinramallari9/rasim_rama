@@ -295,14 +295,30 @@ const localBusinessSchema = {
   },
 };
 
+// Script to prevent flash of wrong theme
+const themeScript = `
+  (function() {
+    try {
+      var savedTheme = localStorage.getItem('theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch (e) {}
+  })();
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="overflow-x-hidden">
+    <html lang="en" className="overflow-x-hidden" suppressHydrationWarning>
       <head>
+        {/* Dark mode detection - runs before paint to prevent flash */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+
         {/* Preconnect to external domains for faster loading */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -330,7 +346,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} font-sans antialiased overflow-x-hidden w-full max-w-[100vw]`}
+        className={`${geistSans.variable} font-sans antialiased overflow-x-hidden w-full max-w-[100vw] bg-white dark:bg-slate-900 text-gray-900 dark:text-white transition-colors duration-300`}
       >
         <LanguageProvider>
           <Navbar />

@@ -58,6 +58,28 @@ const getStatusColor = (status: string) => {
   return { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' };
 };
 
+// Skeleton loader for project cards
+const ProjectCardSkeleton = memo(function ProjectCardSkeleton() {
+  return (
+    <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 sm:p-6 mb-4 shadow-sm border border-gray-100 dark:border-slate-700">
+      <div className="flex gap-4 sm:gap-5">
+        {/* Thumbnail Skeleton */}
+        <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl skeleton" />
+
+        {/* Content Skeleton */}
+        <div className="flex-1 min-w-0">
+          <div className="h-6 w-3/4 skeleton rounded mb-2" />
+          <div className="h-4 w-1/2 skeleton rounded mb-3" />
+          <div className="flex gap-3">
+            <div className="h-7 w-16 skeleton rounded-lg" />
+            <div className="h-7 w-24 skeleton rounded-lg" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+});
+
 // Memoized Project Card component to prevent unnecessary re-renders
 const ProjectCard = memo(function ProjectCard({
   project,
@@ -70,10 +92,10 @@ const ProjectCard = memo(function ProjectCard({
 
   return (
     <Link href={`/projects/${project.id}`}>
-      <div className="group bg-white rounded-2xl p-5 sm:p-6 mb-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-gray-200 active:bg-gray-50 transition-all duration-200 cursor-pointer">
+      <div className="group card-tap touch-highlight bg-white dark:bg-slate-800 rounded-2xl p-5 sm:p-6 mb-4 shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-md hover:border-gray-200 dark:hover:border-slate-600 active:bg-gray-50 dark:active:bg-slate-700 transition-all duration-200 cursor-pointer fade-in" style={{ animationDelay: `${index * 50}ms` }}>
         <div className="flex gap-4 sm:gap-5">
           {/* Visual Thumbnail */}
-          <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white">
+          <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
             <span className="text-2xl sm:text-3xl font-light">{project.capacity}</span>
           </div>
 
@@ -81,27 +103,27 @@ const ProjectCard = memo(function ProjectCard({
           <div className="flex-1 min-w-0">
             {/* Title Row */}
             <div className="flex items-start justify-between gap-2 mb-2">
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
                 {project.name}
               </h3>
-              <span className="flex-shrink-0 text-gray-300 group-hover:text-gray-900 group-hover:translate-x-1 transition-all text-xl">
+              <span className="flex-shrink-0 text-gray-300 dark:text-slate-500 group-hover:text-gray-900 dark:group-hover:text-white group-hover:translate-x-1 transition-all text-xl">
                 →
               </span>
             </div>
 
             {/* Location */}
-            <p className="text-sm text-gray-500 mb-3">{project.location}</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400 mb-3">{project.location}</p>
 
             {/* Stats Row */}
             <div className="flex items-center gap-3 flex-wrap">
               {/* Capacity Badge */}
-              <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium">
+              <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-slate-300 text-sm font-medium">
                 {project.capacity} MW
               </span>
 
               {/* Status Badge */}
               <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg ${statusColors.bg} ${statusColors.text} text-sm font-medium`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${statusColors.dot}`}></span>
+                <span className={`w-1.5 h-1.5 rounded-full ${statusColors.dot} animate-pulse`}></span>
                 {project.state}
               </span>
             </div>
@@ -219,25 +241,25 @@ export default function Home() {
   ], [t.technical]);
 
   return (
-    <div className="bg-white overflow-x-hidden w-full max-w-full">
+    <div className="bg-white dark:bg-slate-900 overflow-x-hidden w-full max-w-full transition-colors duration-300">
       {/* HERO - Responsive Editorial */}
-      <section id="home" className="min-h-screen flex items-center border-b border-gray-100 pt-16 sm:pt-18 lg:pt-20">
+      <section id="home" className="min-h-screen flex items-center border-b border-gray-100 dark:border-slate-800 pt-16 sm:pt-18 lg:pt-20">
         <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24 py-10 sm:py-16 lg:py-20">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-14 lg:gap-16 xl:gap-24 items-center">
             {/* Left - Typography (shows FIRST on mobile now) */}
             <div className="space-y-5 sm:space-y-8 order-1 lg:order-1">
               <div>
-                <p className="text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-3 sm:mb-6">
+                <p className="text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 dark:text-slate-500 mb-3 sm:mb-6">
                   Hydropower Engineering
                 </p>
-                <h1 className="text-[2.5rem] sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-light text-gray-900 leading-[1.1] sm:leading-[1.05] tracking-tight">
+                <h1 className="text-[2.5rem] sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-light text-gray-900 dark:text-white leading-[1.1] sm:leading-[1.05] tracking-tight">
                   {t.hero.title1}
                   <span className="block font-medium">{t.hero.title2}</span>
                   <span className="block">{t.hero.title3}</span>
                 </h1>
               </div>
 
-              <p className="text-base sm:text-lg md:text-xl text-gray-500 max-w-lg leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-gray-500 dark:text-slate-400 max-w-lg leading-relaxed">
                 {t.hero.subtitle}
               </p>
 
@@ -245,13 +267,13 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
                 <button
                   onClick={scrollToProjects}
-                  className="h-12 sm:h-14 px-6 sm:px-8 bg-gray-900 text-white text-sm font-medium tracking-wide hover:bg-gray-800 active:bg-gray-950 transition-colors"
+                  className="btn-press ripple h-12 sm:h-14 px-6 sm:px-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium tracking-wide hover:bg-gray-800 dark:hover:bg-gray-100 active:bg-gray-950 dark:active:bg-gray-200 transition-colors rounded-lg"
                 >
                   {t.hero.viewProjects}
                 </button>
                 <button
                   onClick={scrollToContact}
-                  className="h-12 sm:h-14 px-6 sm:px-8 border border-gray-300 text-gray-900 text-sm font-medium tracking-wide hover:border-gray-900 active:bg-gray-100 transition-colors"
+                  className="btn-press h-12 sm:h-14 px-6 sm:px-8 border border-gray-300 dark:border-slate-600 text-gray-900 dark:text-white text-sm font-medium tracking-wide hover:border-gray-900 dark:hover:border-white active:bg-gray-100 dark:active:bg-slate-800 transition-colors rounded-lg"
                 >
                   {t.hero.contactUs}
                 </button>
@@ -260,15 +282,17 @@ export default function Home() {
 
             {/* Right - Image (shows SECOND on mobile now) */}
             <div className="relative order-2 lg:order-2">
-              <div className="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] overflow-hidden rounded-lg sm:rounded-xl">
+              <div className="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] overflow-hidden rounded-lg sm:rounded-xl shadow-2xl shadow-gray-900/10 dark:shadow-black/30">
                 <Image
                   src="/mainscreenimage2.png"
                   alt="Hydropower facility"
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-                  className="object-cover"
+                  className="object-cover transition-transform duration-700 hover:scale-105"
                   priority
                   quality={85}
+                  placeholder="blur"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAgEDBAMBAAAAAAAAAAAAAQIDAAQRBRIhMQYTQWH/xAAVAQEBAAAAAAAAAAAAAAAAAAADBP/EABkRAAIDAQAAAAAAAAAAAAAAAAECAAMRIf/aAAwDAQACEQMRAD8AzrT7e6u9Ot57qNoriWNXkQnOxiASM/RmnUUq0bBYi+4n/9k="
                 />
               </div>
             </div>
@@ -277,13 +301,13 @@ export default function Home() {
       </section>
 
       {/* ABOUT - Responsive Editorial Two-Column */}
-      <section id="about" className="py-14 sm:py-24 md:py-32 lg:py-40 bg-gray-50">
+      <section id="about" className="py-14 sm:py-24 md:py-32 lg:py-40 bg-gray-50 dark:bg-slate-800/50">
         <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24">
           <div className="grid lg:grid-cols-12 gap-10 md:gap-12 lg:gap-16">
             {/* Left Column - Headline */}
             <div className="lg:col-span-5">
-              <p className="text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-3 sm:mb-6">About</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light text-gray-900 leading-[1.15] sm:leading-[1.1]">
+              <p className="text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 dark:text-slate-500 mb-3 sm:mb-6">About</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light text-gray-900 dark:text-white leading-[1.15] sm:leading-[1.1]">
                 {t.about.heading1}
                 <span className="block font-medium">{t.about.heading2}</span>
               </h2>
@@ -291,22 +315,22 @@ export default function Home() {
 
             {/* Right Column - Content */}
             <div className="lg:col-span-7 space-y-6 sm:space-y-8">
-              <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
+              <p className="text-base sm:text-lg text-gray-600 dark:text-slate-300 leading-relaxed">
                 {t.about.paragraph1}
               </p>
-              <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
+              <p className="text-base sm:text-lg text-gray-600 dark:text-slate-300 leading-relaxed">
                 {t.about.paragraph2}
               </p>
 
               {/* Stats - Responsive Grid */}
-              <div className="grid grid-cols-2 gap-8 sm:gap-12 pt-6 sm:pt-8 border-t border-gray-200">
+              <div className="grid grid-cols-2 gap-8 sm:gap-12 pt-6 sm:pt-8 border-t border-gray-200 dark:border-slate-700">
                 <div>
-                  <div className="text-4xl sm:text-5xl font-light text-gray-900 mb-1 sm:mb-2">{t.about.stat1}</div>
-                  <div className="text-sm font-medium text-gray-500">{t.about.stat1Label}</div>
+                  <div className="text-4xl sm:text-5xl font-light text-gray-900 dark:text-white mb-1 sm:mb-2">{t.about.stat1}</div>
+                  <div className="text-sm font-medium text-gray-500 dark:text-slate-400">{t.about.stat1Label}</div>
                 </div>
                 <div>
-                  <div className="text-4xl sm:text-5xl font-light text-gray-900 mb-1 sm:mb-2">{t.about.stat2}</div>
-                  <div className="text-sm font-medium text-gray-500">{t.about.stat2Label}</div>
+                  <div className="text-4xl sm:text-5xl font-light text-gray-900 dark:text-white mb-1 sm:mb-2">{t.about.stat2}</div>
+                  <div className="text-sm font-medium text-gray-500 dark:text-slate-400">{t.about.stat2Label}</div>
                 </div>
               </div>
             </div>
@@ -315,32 +339,32 @@ export default function Home() {
       </section>
 
       {/* SERVICES - Responsive Editorial List */}
-      <section id="services" className="py-14 sm:py-24 md:py-32 lg:py-40 bg-white">
+      <section id="services" className="py-14 sm:py-24 md:py-32 lg:py-40 bg-white dark:bg-slate-900">
         <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24">
           <div className="mb-10 sm:mb-16 md:mb-20 lg:mb-28">
-            <p className="text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-3 sm:mb-6">{t.services.heading}</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-light text-gray-900 max-w-3xl leading-[1.15] sm:leading-[1.1]">
+            <p className="text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 dark:text-slate-500 mb-3 sm:mb-6">{t.services.heading}</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-light text-gray-900 dark:text-white max-w-3xl leading-[1.15] sm:leading-[1.1]">
               {t.services.subheading}
             </h2>
           </div>
 
-          <div className="border-t border-gray-200">
+          <div className="border-t border-gray-200 dark:border-slate-700">
             {services.map((service, index) => (
-              <div key={index} className="group border-b border-gray-200 py-6 sm:py-8 md:py-10 lg:py-12">
+              <div key={index} className="group border-b border-gray-200 dark:border-slate-700 py-6 sm:py-8 md:py-10 lg:py-12 transition-colors hover:bg-gray-50 dark:hover:bg-slate-800/50">
                 {/* Mobile: Stacked layout / Desktop: Grid layout */}
                 <div className="flex flex-col md:grid md:grid-cols-12 md:gap-4 md:items-baseline">
                   {/* Number + Title row on mobile */}
                   <div className="flex items-baseline gap-4 md:contents">
-                    <span className="text-xs sm:text-sm text-gray-300 font-mono md:col-span-1 flex-shrink-0 w-6 md:w-auto">
+                    <span className="text-xs sm:text-sm text-gray-300 dark:text-slate-600 font-mono md:col-span-1 flex-shrink-0 w-6 md:w-auto">
                       {service.number}
                     </span>
-                    <h3 className="text-lg sm:text-xl lg:text-2xl font-medium text-gray-900 group-hover:text-gray-600 transition-colors md:col-span-4">
+                    <h3 className="text-lg sm:text-xl lg:text-2xl font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors md:col-span-4">
                       {service.title}
                     </h3>
                   </div>
                   {/* Description */}
                   <div className="mt-3 md:mt-0 md:col-span-7 pl-10 md:pl-0">
-                    <p className="text-sm sm:text-base text-gray-500 leading-relaxed">{service.description}</p>
+                    <p className="text-sm sm:text-base text-gray-500 dark:text-slate-400 leading-relaxed">{service.description}</p>
                   </div>
                 </div>
               </div>
@@ -350,11 +374,11 @@ export default function Home() {
       </section>
 
       {/* PROJECTS - Responsive Clean Layout */}
-      <section id="projects" className="py-14 sm:py-24 md:py-32 lg:py-40 bg-gray-50">
+      <section id="projects" className="py-14 sm:py-24 md:py-32 lg:py-40 bg-gray-50 dark:bg-slate-800/50">
         <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24">
           <div className="mb-10 sm:mb-16 md:mb-20 lg:mb-28">
-            <p className="text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-3 sm:mb-6">Portfolio</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-light text-gray-900 max-w-3xl leading-[1.15] sm:leading-[1.1]">
+            <p className="text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 dark:text-slate-500 mb-3 sm:mb-6">Portfolio</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-light text-gray-900 dark:text-white max-w-3xl leading-[1.15] sm:leading-[1.1]">
               {t.projectsSection.heading}
             </h2>
           </div>
@@ -368,10 +392,10 @@ export default function Home() {
             <div className="pt-6 text-center sm:text-left">
               <Link
                 href="/gallery"
-                className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium transition-colors"
+                className="inline-flex items-center gap-2 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white font-medium transition-colors touch-highlight"
               >
                 View all projects
-                <span className="text-lg">→</span>
+                <span className="text-lg transition-transform group-hover:translate-x-1">→</span>
               </Link>
             </div>
           </div>
@@ -436,33 +460,33 @@ export default function Home() {
       </section>
 
       {/* CONTACT - Responsive Professional Form */}
-      <section id="contact" className="py-14 sm:py-24 md:py-32 lg:py-40 bg-white">
+      <section id="contact" className="py-14 sm:py-24 md:py-32 lg:py-40 bg-white dark:bg-slate-900">
         <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24">
           <div className="grid lg:grid-cols-2 gap-12 md:gap-16 lg:gap-20">
             {/* Left - Info */}
             <div>
-              <p className="text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-3 sm:mb-6">Contact</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light text-gray-900 leading-[1.15] sm:leading-[1.1] mb-6 sm:mb-8">
+              <p className="text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 dark:text-slate-500 mb-3 sm:mb-6">Contact</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light text-gray-900 dark:text-white leading-[1.15] sm:leading-[1.1] mb-6 sm:mb-8">
                 {t.contactSection.heading1}
                 <span className="block font-medium">{t.contactSection.heading2}</span>
               </h2>
-              <p className="text-base sm:text-lg text-gray-500 mb-8 sm:mb-12 leading-relaxed max-w-md">
+              <p className="text-base sm:text-lg text-gray-500 dark:text-slate-400 mb-8 sm:mb-12 leading-relaxed max-w-md">
                 {t.contactSection.subtitle}
               </p>
 
               {/* Contact Info - Horizontal on tablet, vertical elsewhere */}
               <div className="grid sm:grid-cols-3 lg:grid-cols-1 gap-6 sm:gap-4 lg:gap-6">
                 <div>
-                  <p className="text-sm font-medium text-gray-500 mb-1">{t.contactSection.email}</p>
-                  <p className="text-base sm:text-lg text-gray-900">info@ramarasim.com</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-slate-500 mb-1">{t.contactSection.email}</p>
+                  <p className="text-base sm:text-lg text-gray-900 dark:text-white">info@ramarasim.com</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500 mb-1">{t.contactSection.phone}</p>
-                  <p className="text-base sm:text-lg text-gray-900">+355 69 XXX XXXX</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-slate-500 mb-1">{t.contactSection.phone}</p>
+                  <p className="text-base sm:text-lg text-gray-900 dark:text-white">+355 69 XXX XXXX</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500 mb-1">{t.contactSection.headquarters}</p>
-                  <p className="text-base sm:text-lg text-gray-900">Tirana, Albania</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-slate-500 mb-1">{t.contactSection.headquarters}</p>
+                  <p className="text-base sm:text-lg text-gray-900 dark:text-white">Tirana, Albania</p>
                 </div>
               </div>
             </div>
@@ -471,13 +495,13 @@ export default function Home() {
             <div>
               <form className="space-y-5 sm:space-y-6" onSubmit={handleSubmit}>
                 {formStatus.type && (
-                  <div className={`p-3 sm:p-4 text-sm ${formStatus.type === 'success' ? 'bg-gray-100 text-gray-900' : 'bg-red-50 text-red-900'}`}>
+                  <div className={`p-3 sm:p-4 text-sm rounded-lg fade-in ${formStatus.type === 'success' ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-900 dark:text-emerald-300' : 'bg-red-50 dark:bg-red-900/30 text-red-900 dark:text-red-300'}`}>
                     {formStatus.message}
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-2">{t.contactSection.nameLabel}</label>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-slate-400 mb-2">{t.contactSection.nameLabel}</label>
                   <input
                     type="text"
                     name="name"
@@ -485,16 +509,16 @@ export default function Home() {
                     onChange={handleFormChange}
                     required
                     maxLength={100}
-                    className={`w-full h-12 px-4 border rounded-lg focus:ring-2 focus:ring-gray-900 focus:ring-offset-1 text-base transition-colors bg-white ${
-                      formErrors.name ? 'border-red-500' : 'border-gray-200 focus:border-gray-900'
+                    className={`w-full h-12 px-4 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-1 dark:focus:ring-offset-slate-900 text-base transition-all bg-white dark:bg-slate-800 dark:text-white ${
+                      formErrors.name ? 'border-red-500' : 'border-gray-200 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400'
                     }`}
                     placeholder={t.contactSection.namePlaceholder}
                   />
-                  {formErrors.name && <p className="text-red-500 text-sm mt-1.5">{formErrors.name}</p>}
+                  {formErrors.name && <p className="text-red-500 dark:text-red-400 text-sm mt-1.5">{formErrors.name}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-2">{t.contactSection.emailLabel}</label>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-slate-400 mb-2">{t.contactSection.emailLabel}</label>
                   <input
                     type="email"
                     name="email"
@@ -502,22 +526,22 @@ export default function Home() {
                     onChange={handleFormChange}
                     required
                     maxLength={254}
-                    className={`w-full h-12 px-4 border rounded-lg focus:ring-2 focus:ring-gray-900 focus:ring-offset-1 text-base transition-colors bg-white ${
-                      formErrors.email ? 'border-red-500' : 'border-gray-200 focus:border-gray-900'
+                    className={`w-full h-12 px-4 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-1 dark:focus:ring-offset-slate-900 text-base transition-all bg-white dark:bg-slate-800 dark:text-white ${
+                      formErrors.email ? 'border-red-500' : 'border-gray-200 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400'
                     }`}
                     placeholder={t.contactSection.emailPlaceholder}
                   />
-                  {formErrors.email && <p className="text-red-500 text-sm mt-1.5">{formErrors.email}</p>}
+                  {formErrors.email && <p className="text-red-500 dark:text-red-400 text-sm mt-1.5">{formErrors.email}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-2">{t.contactSection.projectTypeLabel}</label>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-slate-400 mb-2">{t.contactSection.projectTypeLabel}</label>
                   <select
                     name="project_type"
                     value={formData.project_type}
                     onChange={handleFormChange}
                     required
-                    className="w-full h-12 px-4 border border-gray-200 rounded-lg focus:border-gray-900 focus:ring-2 focus:ring-gray-900 focus:ring-offset-1 text-base bg-white transition-colors"
+                    className="w-full h-12 px-4 border border-gray-200 dark:border-slate-600 rounded-lg focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-1 dark:focus:ring-offset-slate-900 text-base bg-white dark:bg-slate-800 dark:text-white transition-all"
                   >
                     <option value="turbine_installation">{t.contactSection.option1}</option>
                     <option value="assembly">{t.contactSection.option2}</option>
@@ -527,7 +551,7 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-2">{t.contactSection.messageLabel}</label>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-slate-400 mb-2">{t.contactSection.messageLabel}</label>
                   <textarea
                     name="message"
                     value={formData.message}
@@ -535,20 +559,28 @@ export default function Home() {
                     required
                     rows={4}
                     maxLength={5000}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gray-900 focus:ring-offset-1 text-base resize-none transition-colors bg-white ${
-                      formErrors.message ? 'border-red-500' : 'border-gray-200 focus:border-gray-900'
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-1 dark:focus:ring-offset-slate-900 text-base resize-none transition-all bg-white dark:bg-slate-800 dark:text-white ${
+                      formErrors.message ? 'border-red-500' : 'border-gray-200 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400'
                     }`}
                     placeholder={t.contactSection.messagePlaceholder}
                   ></textarea>
-                  {formErrors.message && <p className="text-red-500 text-sm mt-1.5">{formErrors.message}</p>}
+                  {formErrors.message && <p className="text-red-500 dark:text-red-400 text-sm mt-1.5">{formErrors.message}</p>}
                 </div>
 
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full h-12 sm:h-14 bg-gray-900 text-white text-sm font-medium tracking-wide hover:bg-gray-800 active:bg-gray-950 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed mt-6 sm:mt-8"
+                  className="btn-press ripple w-full h-12 sm:h-14 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium tracking-wide hover:bg-gray-800 dark:hover:bg-gray-100 active:bg-gray-950 dark:active:bg-gray-200 transition-colors disabled:bg-gray-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed mt-6 sm:mt-8 rounded-lg"
                 >
-                  {submitting ? 'Sending...' : t.contactSection.sendButton}
+                  {submitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      Sending...
+                    </span>
+                  ) : t.contactSection.sendButton}
                 </button>
               </form>
             </div>
@@ -557,37 +589,37 @@ export default function Home() {
       </section>
 
       {/* FOOTER - Responsive Minimal */}
-      <footer className="py-12 sm:py-14 md:py-16 bg-white">
+      <footer className="py-12 sm:py-14 md:py-16 bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800">
         <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24">
           {/* Footer Grid: 1 col mobile, 2 col tablet, 4 col desktop */}
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12 mb-10 sm:mb-12 lg:mb-16">
             <div className="col-span-2 sm:col-span-2 lg:col-span-2">
-              <h4 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">Rasim Rama</h4>
-              <p className="text-sm sm:text-base text-gray-500 max-w-sm leading-relaxed">
+              <h4 className="text-lg sm:text-xl font-medium text-gray-900 dark:text-white mb-3 sm:mb-4">Rasim Rama</h4>
+              <p className="text-sm sm:text-base text-gray-500 dark:text-slate-400 max-w-sm leading-relaxed">
                 {t.footer.description}
               </p>
             </div>
 
             <div>
-              <h4 className="text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-3 sm:mb-4">{t.footer.servicesTitle}</h4>
+              <h4 className="text-xs sm:text-sm uppercase tracking-wide text-gray-400 dark:text-slate-500 mb-3 sm:mb-4">{t.footer.servicesTitle}</h4>
               <ul className="space-y-1 text-sm sm:text-base">
                 <li>
-                  <a href="#services" className="block py-2 text-gray-600 hover:text-gray-900 active:text-gray-900 transition-colors">
+                  <a href="#services" className="block py-2 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white active:text-gray-900 transition-colors touch-highlight">
                     Turbine Installation
                   </a>
                 </li>
                 <li>
-                  <a href="#services" className="block py-2 text-gray-600 hover:text-gray-900 active:text-gray-900 transition-colors">
+                  <a href="#services" className="block py-2 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white active:text-gray-900 transition-colors touch-highlight">
                     Assembly
                   </a>
                 </li>
                 <li>
-                  <a href="#services" className="block py-2 text-gray-600 hover:text-gray-900 active:text-gray-900 transition-colors">
+                  <a href="#services" className="block py-2 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white active:text-gray-900 transition-colors touch-highlight">
                     Maintenance
                   </a>
                 </li>
                 <li>
-                  <a href="#services" className="block py-2 text-gray-600 hover:text-gray-900 active:text-gray-900 transition-colors">
+                  <a href="#services" className="block py-2 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white active:text-gray-900 transition-colors touch-highlight">
                     Repairs
                   </a>
                 </li>
@@ -595,20 +627,20 @@ export default function Home() {
             </div>
 
             <div>
-              <h4 className="text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-3 sm:mb-4">{t.footer.companyTitle}</h4>
+              <h4 className="text-xs sm:text-sm uppercase tracking-wide text-gray-400 dark:text-slate-500 mb-3 sm:mb-4">{t.footer.companyTitle}</h4>
               <ul className="space-y-1 text-sm sm:text-base">
                 <li>
-                  <a href="#about" className="block py-2 text-gray-600 hover:text-gray-900 active:text-gray-900 transition-colors">
+                  <a href="#about" className="block py-2 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white active:text-gray-900 transition-colors touch-highlight">
                     About
                   </a>
                 </li>
                 <li>
-                  <a href="#projects" className="block py-2 text-gray-600 hover:text-gray-900 active:text-gray-900 transition-colors">
+                  <a href="#projects" className="block py-2 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white active:text-gray-900 transition-colors touch-highlight">
                     Projects
                   </a>
                 </li>
                 <li>
-                  <a href="#contact" className="block py-2 text-gray-600 hover:text-gray-900 active:text-gray-900 transition-colors">
+                  <a href="#contact" className="block py-2 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white active:text-gray-900 transition-colors touch-highlight">
                     Contact
                   </a>
                 </li>
@@ -616,15 +648,15 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="pt-6 sm:pt-8 border-t border-gray-100 text-center space-y-3">
-            <p className="text-xs sm:text-sm text-gray-400">{t.footer.copyright}</p>
-            <p className="text-xs text-gray-400">
+          <div className="pt-6 sm:pt-8 border-t border-gray-100 dark:border-slate-800 text-center space-y-3">
+            <p className="text-xs sm:text-sm text-gray-400 dark:text-slate-500">{t.footer.copyright}</p>
+            <p className="text-xs text-gray-400 dark:text-slate-500">
               Crafted with precision by{' '}
               <a
                 href="https://averon.agency"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+                className="text-gray-600 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors"
               >
                 Averon Agency
               </a>
@@ -644,7 +676,7 @@ export default function Home() {
       >
         <button
           onClick={scrollToContact}
-          className="w-full h-14 bg-[#1F5EFF] text-white font-semibold text-base tracking-wide rounded-xl shadow-lg shadow-blue-500/25 hover:bg-[#0047E1] active:bg-[#003CBC] transition-colors flex items-center justify-center gap-2"
+          className="btn-press w-full h-14 bg-[#1F5EFF] dark:bg-blue-500 text-white font-semibold text-base tracking-wide rounded-xl shadow-lg shadow-blue-500/25 dark:shadow-blue-500/40 hover:bg-[#0047E1] dark:hover:bg-blue-600 active:bg-[#003CBC] dark:active:bg-blue-700 transition-all flex items-center justify-center gap-2"
         >
           <svg
             className="w-5 h-5"

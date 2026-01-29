@@ -9,6 +9,7 @@ import { useLanguage } from '../context/LanguageContext';
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const { language, toggleLanguage, t } = useLanguage();
 
   useEffect(() => {
@@ -16,9 +17,28 @@ const Navbar = () => {
       setIsScrolled(window.scrollY > 20);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Initialize dark mode state
+  useEffect(() => {
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    setIsDark(isDarkMode);
+  }, []);
+
+  // Toggle dark mode
+  const toggleDarkMode = () => {
+    const newDarkMode = !isDark;
+    setIsDark(newDarkMode);
+    if (newDarkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
 
   const navLinks = [
     { name: t.nav.home, href: '#home' },
@@ -115,20 +135,40 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Language Toggle & CTA Button - Far Right */}
+          {/* Language Toggle, Dark Mode & CTA Button - Far Right */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.8, ease: 'easeOut' }}
-            className="hidden lg:flex items-center space-x-4"
+            className="hidden lg:flex items-center space-x-3"
           >
+            {/* Dark Mode Toggle */}
+            <button
+              onClick={toggleDarkMode}
+              className="relative w-10 h-10 flex items-center justify-center text-white border-2 border-white/50 rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105 hover:border-white"
+              aria-label="Toggle dark mode"
+            >
+              {isDark ? (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
+
+            {/* Language Toggle */}
             <button
               onClick={toggleLanguage}
-              className="relative px-4 py-2 text-white font-bold text-sm tracking-wide border-2 border-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105"
+              className="relative px-4 py-2 text-white font-bold text-sm tracking-wide border-2 border-white/50 rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105 hover:border-white"
             >
               <span className="relative z-10">{language === 'en' ? 'SQ' : 'EN'}</span>
               <span className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </button>
+
+            {/* CTA Button */}
             <button
               onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
               className="relative px-8 py-3 text-white font-bold text-sm tracking-wide border-2 border-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105"
@@ -228,13 +268,38 @@ const Navbar = () => {
                 transition={{ duration: 0.3, delay: 0.4 }}
                 className="pt-8 pb-4 space-y-3"
               >
-                {/* Language Toggle */}
-                <button
-                  onClick={toggleLanguage}
-                  className="w-full h-14 text-white font-medium text-base tracking-wide border-2 border-white/40 rounded-xl hover:bg-white/10 active:bg-white/20 transition-all duration-200"
-                >
-                  {language === 'en' ? 'Shqip (SQ)' : 'English (EN)'}
-                </button>
+                {/* Dark Mode & Language Row */}
+                <div className="flex gap-3">
+                  {/* Dark Mode Toggle */}
+                  <button
+                    onClick={toggleDarkMode}
+                    className="flex-1 h-14 flex items-center justify-center gap-2 text-white font-medium text-base tracking-wide border-2 border-white/40 rounded-xl hover:bg-white/10 active:bg-white/20 transition-all duration-200"
+                  >
+                    {isDark ? (
+                      <>
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        Light
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                        Dark
+                      </>
+                    )}
+                  </button>
+
+                  {/* Language Toggle */}
+                  <button
+                    onClick={toggleLanguage}
+                    className="flex-1 h-14 text-white font-medium text-base tracking-wide border-2 border-white/40 rounded-xl hover:bg-white/10 active:bg-white/20 transition-all duration-200"
+                  >
+                    {language === 'en' ? 'SQ' : 'EN'}
+                  </button>
+                </div>
 
                 {/* CTA Button */}
                 <button
