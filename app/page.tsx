@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo, memo } from 'react';
+import { useState, useCallback, useMemo, memo, useEffect } from 'react';
 import { useLanguage } from './context/LanguageContext';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -45,6 +45,19 @@ const PROJECTS: Project[] = [
   }
 ];
 
+// Status color mapping
+const getStatusColor = (status: string) => {
+  const lowerStatus = status.toLowerCase();
+  if (lowerStatus.includes('operational') || lowerStatus.includes('completed')) {
+    return { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' };
+  } else if (lowerStatus.includes('construction')) {
+    return { bg: 'bg-amber-50', text: 'text-amber-700', dot: 'bg-amber-500' };
+  } else if (lowerStatus.includes('planning')) {
+    return { bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-500' };
+  }
+  return { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500' };
+};
+
 // Memoized Project Card component to prevent unnecessary re-renders
 const ProjectCard = memo(function ProjectCard({
   project,
@@ -53,38 +66,45 @@ const ProjectCard = memo(function ProjectCard({
   project: Project;
   index: number;
 }) {
+  const statusColors = getStatusColor(project.state);
+
   return (
     <Link href={`/projects/${project.id}`}>
-      <div className="group py-8 sm:py-10 md:py-12 border-b border-gray-100 cursor-pointer">
-        <div className="flex flex-col lg:grid lg:grid-cols-12 lg:gap-6 lg:items-center">
-          <div className="hidden lg:block lg:col-span-1">
-            <span className="text-sm text-gray-300 font-mono">{String(index + 1).padStart(2, '0')}</span>
+      <div className="group bg-white rounded-2xl p-5 sm:p-6 mb-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-gray-200 active:bg-gray-50 transition-all duration-200 cursor-pointer">
+        <div className="flex gap-4 sm:gap-5">
+          {/* Visual Thumbnail */}
+          <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white">
+            <span className="text-2xl sm:text-3xl font-light">{project.capacity}</span>
           </div>
-          <div className="lg:col-span-4 mb-4 lg:mb-0">
-            <div className="flex items-start gap-3 lg:block">
-              <span className="text-xs text-gray-300 font-mono lg:hidden mt-1.5">
-                {String(index + 1).padStart(2, '0')}
+
+          {/* Content */}
+          <div className="flex-1 min-w-0">
+            {/* Title Row */}
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
+                {project.name}
+              </h3>
+              <span className="flex-shrink-0 text-gray-300 group-hover:text-gray-900 group-hover:translate-x-1 transition-all text-xl">
+                →
               </span>
-              <div>
-                <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-gray-900 group-hover:text-gray-600 transition-colors mb-1 sm:mb-2">
-                  {project.name}
-                </h3>
-                <p className="text-sm sm:text-base text-gray-400">{project.location}</p>
-              </div>
             </div>
-          </div>
-          <div className="flex gap-8 sm:gap-12 lg:contents pl-7 lg:pl-0">
-            <div className="lg:col-span-2">
-              <p className="text-xs uppercase tracking-wide text-gray-400 mb-0.5 sm:mb-1">Capacity</p>
-              <p className="text-base sm:text-lg font-medium text-gray-900">{project.capacity} MW</p>
+
+            {/* Location */}
+            <p className="text-sm text-gray-500 mb-3">{project.location}</p>
+
+            {/* Stats Row */}
+            <div className="flex items-center gap-3 flex-wrap">
+              {/* Capacity Badge */}
+              <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium">
+                {project.capacity} MW
+              </span>
+
+              {/* Status Badge */}
+              <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg ${statusColors.bg} ${statusColors.text} text-sm font-medium`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${statusColors.dot}`}></span>
+                {project.state}
+              </span>
             </div>
-            <div className="lg:col-span-2">
-              <p className="text-xs uppercase tracking-wide text-gray-400 mb-0.5 sm:mb-1">Status</p>
-              <p className="text-base sm:text-lg text-gray-900">{project.state}</p>
-            </div>
-          </div>
-          <div className="lg:col-span-3 flex items-center lg:justify-end mt-4 lg:mt-0 pl-7 lg:pl-0">
-            <span className="text-gray-300 group-hover:text-gray-900 transition-colors text-xl sm:text-2xl">→</span>
           </div>
         </div>
       </div>
@@ -106,6 +126,19 @@ export default function Home() {
   });
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [showFloatingCTA, setShowFloatingCTA] = useState(false);
+
+  // Show floating CTA after scrolling past hero section
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const heroHeight = window.innerHeight * 0.5;
+      setShowFloatingCTA(scrollY > heroHeight);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Memoized handler to prevent recreation on every render
   const handleFormChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -330,6 +363,17 @@ export default function Home() {
             {PROJECTS.map((project, index) => (
               <ProjectCard key={project.id} project={project} index={index} />
             ))}
+
+            {/* View All Link */}
+            <div className="pt-6 text-center sm:text-left">
+              <Link
+                href="/gallery"
+                className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium transition-colors"
+              >
+                View all projects
+                <span className="text-lg">→</span>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -589,6 +633,35 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Floating Contact CTA - Mobile Only */}
+      <div
+        className={`lg:hidden fixed bottom-6 left-4 right-4 z-40 transition-all duration-300 ${
+          showFloatingCTA
+            ? 'translate-y-0 opacity-100'
+            : 'translate-y-20 opacity-0 pointer-events-none'
+        }`}
+      >
+        <button
+          onClick={scrollToContact}
+          className="w-full h-14 bg-[#1F5EFF] text-white font-semibold text-base tracking-wide rounded-xl shadow-lg shadow-blue-500/25 hover:bg-[#0047E1] active:bg-[#003CBC] transition-colors flex items-center justify-center gap-2"
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+            />
+          </svg>
+          {t.nav.requestProposal}
+        </button>
+      </div>
     </div>
   );
 }
