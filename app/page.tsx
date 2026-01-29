@@ -544,8 +544,20 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="pt-6 sm:pt-8 border-t border-gray-100 text-center">
+          <div className="pt-6 sm:pt-8 border-t border-gray-100 text-center space-y-3">
             <p className="text-xs sm:text-sm text-gray-400">{t.footer.copyright}</p>
+            <p className="text-xs text-gray-400">
+              Crafted with precision by{' '}
+              <a
+                href="https://averon.agency"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+              >
+                Averon Agency
+              </a>
+              {' '}— Where ideas become digital reality
+            </p>
           </div>
         </div>
       </footer>

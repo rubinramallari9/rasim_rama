@@ -592,9 +592,21 @@ export default function ProjectPageClient({ projectId }: ProjectPageClientProps)
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-6 lg:px-20 text-center">
+        <div className="container mx-auto px-6 lg:px-20 text-center space-y-3">
           <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent mb-8"></div>
           <p className="text-gray-400">© 2025 Rama Rasim Hydropower. Engineering excellence in renewable energy.</p>
+          <p className="text-xs text-gray-500">
+            Crafted with precision by{' '}
+            <a
+              href="https://averon.agency"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-400 hover:text-cyan-400 font-medium transition-colors"
+            >
+              Averon Agency
+            </a>
+            {' '}— Where ideas become digital reality
+          </p>
         </div>
       </footer>
     </div>
