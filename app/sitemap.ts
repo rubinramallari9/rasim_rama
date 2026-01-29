@@ -1,6 +1,12 @@
 import { MetadataRoute } from "next";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://rasimrama.com";
+// Use environment variable or Vercel's automatic URL
+// IMPORTANT: Set NEXT_PUBLIC_SITE_URL in Vercel Environment Variables
+// to match your exact production domain (e.g., https://www.rasimrama.com)
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "https://www.rasimrama.com");
 
 // Project IDs - in production, fetch these from your database/API
 const projectIds = [1, 2, 3];
@@ -30,33 +36,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  // Section anchors (useful for search engines)
-  const sectionPages: MetadataRoute.Sitemap = [
-    {
-      url: `${siteUrl}/#about`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${siteUrl}/#services`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${siteUrl}/#projects`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.6,
-    },
-    {
-      url: `${siteUrl}/#contact`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-  ];
-
-  return [...staticPages, ...projectPages, ...sectionPages];
+  return [...staticPages, ...projectPages];
 }
