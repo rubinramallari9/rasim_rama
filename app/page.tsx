@@ -190,14 +190,14 @@ export default function Home() {
       {/* HERO - Responsive Editorial */}
       <section id="home" className="min-h-screen flex items-center border-b border-gray-100 pt-16 sm:pt-18 lg:pt-20">
         <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24 py-10 sm:py-16 lg:py-20">
-          <div className="grid lg:grid-cols-2 gap-10 md:gap-14 lg:gap-16 xl:gap-24 items-center">
-            {/* Left - Typography */}
-            <div className="space-y-6 sm:space-y-8 order-2 lg:order-1">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-14 lg:gap-16 xl:gap-24 items-center">
+            {/* Left - Typography (shows FIRST on mobile now) */}
+            <div className="space-y-5 sm:space-y-8 order-1 lg:order-1">
               <div>
-                <p className="text-xs sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-4 sm:mb-6">
+                <p className="text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-3 sm:mb-6">
                   Hydropower Engineering
                 </p>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-light text-gray-900 leading-[1.08] sm:leading-[1.05] tracking-tight">
+                <h1 className="text-[2.5rem] sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-light text-gray-900 leading-[1.1] sm:leading-[1.05] tracking-tight">
                   {t.hero.title1}
                   <span className="block font-medium">{t.hero.title2}</span>
                   <span className="block">{t.hero.title3}</span>
@@ -225,9 +225,9 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right - Image (shows first on mobile) */}
-            <div className="relative order-1 lg:order-2">
-              <div className="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] overflow-hidden">
+            {/* Right - Image (shows SECOND on mobile now) */}
+            <div className="relative order-2 lg:order-2">
+              <div className="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] overflow-hidden rounded-lg sm:rounded-xl">
                 <Image
                   src="/mainscreenimage2.png"
                   alt="Hydropower facility"
@@ -244,12 +244,12 @@ export default function Home() {
       </section>
 
       {/* ABOUT - Responsive Editorial Two-Column */}
-      <section id="about" className="py-20 sm:py-24 md:py-32 lg:py-40 border-b border-gray-100">
+      <section id="about" className="py-14 sm:py-24 md:py-32 lg:py-40 bg-gray-50">
         <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24">
           <div className="grid lg:grid-cols-12 gap-10 md:gap-12 lg:gap-16">
             {/* Left Column - Headline */}
             <div className="lg:col-span-5">
-              <p className="text-xs sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-4 sm:mb-6">About</p>
+              <p className="text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-3 sm:mb-6">About</p>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light text-gray-900 leading-[1.15] sm:leading-[1.1]">
                 {t.about.heading1}
                 <span className="block font-medium">{t.about.heading2}</span>
@@ -266,14 +266,14 @@ export default function Home() {
               </p>
 
               {/* Stats - Responsive Grid */}
-              <div className="grid grid-cols-2 gap-8 sm:gap-12 pt-6 sm:pt-8 border-t border-gray-100">
+              <div className="grid grid-cols-2 gap-8 sm:gap-12 pt-6 sm:pt-8 border-t border-gray-200">
                 <div>
                   <div className="text-4xl sm:text-5xl font-light text-gray-900 mb-1 sm:mb-2">{t.about.stat1}</div>
-                  <div className="text-xs sm:text-sm uppercase tracking-wide text-gray-400">{t.about.stat1Label}</div>
+                  <div className="text-sm font-medium text-gray-500">{t.about.stat1Label}</div>
                 </div>
                 <div>
                   <div className="text-4xl sm:text-5xl font-light text-gray-900 mb-1 sm:mb-2">{t.about.stat2}</div>
-                  <div className="text-xs sm:text-sm uppercase tracking-wide text-gray-400">{t.about.stat2Label}</div>
+                  <div className="text-sm font-medium text-gray-500">{t.about.stat2Label}</div>
                 </div>
               </div>
             </div>
@@ -282,10 +282,10 @@ export default function Home() {
       </section>
 
       {/* SERVICES - Responsive Editorial List */}
-      <section id="services" className="py-20 sm:py-24 md:py-32 lg:py-40 border-b border-gray-100">
+      <section id="services" className="py-14 sm:py-24 md:py-32 lg:py-40 bg-white">
         <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24">
-          <div className="mb-12 sm:mb-16 md:mb-20 lg:mb-28">
-            <p className="text-xs sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-4 sm:mb-6">{t.services.heading}</p>
+          <div className="mb-10 sm:mb-16 md:mb-20 lg:mb-28">
+            <p className="text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-3 sm:mb-6">{t.services.heading}</p>
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-light text-gray-900 max-w-3xl leading-[1.15] sm:leading-[1.1]">
               {t.services.subheading}
             </h2>
@@ -317,10 +317,10 @@ export default function Home() {
       </section>
 
       {/* PROJECTS - Responsive Clean Layout */}
-      <section id="projects" className="py-20 sm:py-24 md:py-32 lg:py-40 border-b border-gray-100">
+      <section id="projects" className="py-14 sm:py-24 md:py-32 lg:py-40 bg-gray-50">
         <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24">
-          <div className="mb-12 sm:mb-16 md:mb-20 lg:mb-28">
-            <p className="text-xs sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-4 sm:mb-6">Portfolio</p>
+          <div className="mb-10 sm:mb-16 md:mb-20 lg:mb-28">
+            <p className="text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-3 sm:mb-6">Portfolio</p>
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-light text-gray-900 max-w-3xl leading-[1.15] sm:leading-[1.1]">
               {t.projectsSection.heading}
             </h2>
@@ -335,11 +335,11 @@ export default function Home() {
       </section>
 
       {/* CAPABILITIES - Responsive Dark Section */}
-      <section id="technology" className="py-20 sm:py-24 md:py-32 lg:py-40 bg-gray-900 text-white">
+      <section id="technology" className="py-14 sm:py-24 md:py-32 lg:py-40 bg-gray-900 text-white">
         <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24">
           <div className="grid lg:grid-cols-12 gap-8 md:gap-12 lg:gap-16 mb-12 sm:mb-16 md:mb-20">
             <div className="lg:col-span-5">
-              <p className="text-xs sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-500 mb-4 sm:mb-6">Capabilities</p>
+              <p className="text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-500 mb-3 sm:mb-6">Capabilities</p>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light leading-[1.15] sm:leading-[1.1]">
                 {t.technical.heading}
               </h2>
@@ -356,7 +356,7 @@ export default function Home() {
             {specs.map((spec, index) => (
               <div key={index}>
                 <div className="text-3xl sm:text-4xl lg:text-5xl font-light mb-2 sm:mb-3">{spec.value}</div>
-                <div className="text-xs sm:text-sm uppercase tracking-wide text-gray-500">{spec.label}</div>
+                <div className="text-sm font-medium text-gray-400">{spec.label}</div>
               </div>
             ))}
           </div>
@@ -392,12 +392,12 @@ export default function Home() {
       </section>
 
       {/* CONTACT - Responsive Professional Form */}
-      <section id="contact" className="py-20 sm:py-24 md:py-32 lg:py-40 border-b border-gray-100">
+      <section id="contact" className="py-14 sm:py-24 md:py-32 lg:py-40 bg-white">
         <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-16 xl:px-24">
           <div className="grid lg:grid-cols-2 gap-12 md:gap-16 lg:gap-20">
             {/* Left - Info */}
             <div>
-              <p className="text-xs sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-4 sm:mb-6">Contact</p>
+              <p className="text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mb-3 sm:mb-6">Contact</p>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light text-gray-900 leading-[1.15] sm:leading-[1.1] mb-6 sm:mb-8">
                 {t.contactSection.heading1}
                 <span className="block font-medium">{t.contactSection.heading2}</span>
@@ -407,17 +407,17 @@ export default function Home() {
               </p>
 
               {/* Contact Info - Horizontal on tablet, vertical elsewhere */}
-              <div className="grid sm:grid-cols-3 lg:grid-cols-1 gap-6 sm:gap-4 lg:gap-8">
+              <div className="grid sm:grid-cols-3 lg:grid-cols-1 gap-6 sm:gap-4 lg:gap-6">
                 <div>
-                  <p className="text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-1 sm:mb-2">{t.contactSection.email}</p>
-                  <p className="text-base sm:text-lg text-gray-900">info@rasimrama.com</p>
+                  <p className="text-sm font-medium text-gray-500 mb-1">{t.contactSection.email}</p>
+                  <p className="text-base sm:text-lg text-gray-900">info@ramarasim.com</p>
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-1 sm:mb-2">{t.contactSection.phone}</p>
+                  <p className="text-sm font-medium text-gray-500 mb-1">{t.contactSection.phone}</p>
                   <p className="text-base sm:text-lg text-gray-900">+355 69 XXX XXXX</p>
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-1 sm:mb-2">{t.contactSection.headquarters}</p>
+                  <p className="text-sm font-medium text-gray-500 mb-1">{t.contactSection.headquarters}</p>
                   <p className="text-base sm:text-lg text-gray-900">Tirana, Albania</p>
                 </div>
               </div>
@@ -433,7 +433,7 @@ export default function Home() {
                 )}
 
                 <div>
-                  <label className="block text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-2 sm:mb-3">{t.contactSection.nameLabel}</label>
+                  <label className="block text-sm font-medium text-gray-600 mb-2">{t.contactSection.nameLabel}</label>
                   <input
                     type="text"
                     name="name"
@@ -441,16 +441,16 @@ export default function Home() {
                     onChange={handleFormChange}
                     required
                     maxLength={100}
-                    className={`w-full px-0 py-3 sm:py-3.5 border-0 border-b focus:ring-0 text-base sm:text-lg transition-colors bg-transparent ${
+                    className={`w-full h-12 px-4 border rounded-lg focus:ring-2 focus:ring-gray-900 focus:ring-offset-1 text-base transition-colors bg-white ${
                       formErrors.name ? 'border-red-500' : 'border-gray-200 focus:border-gray-900'
                     }`}
                     placeholder={t.contactSection.namePlaceholder}
                   />
-                  {formErrors.name && <p className="text-red-500 text-xs mt-1">{formErrors.name}</p>}
+                  {formErrors.name && <p className="text-red-500 text-sm mt-1.5">{formErrors.name}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-2 sm:mb-3">{t.contactSection.emailLabel}</label>
+                  <label className="block text-sm font-medium text-gray-600 mb-2">{t.contactSection.emailLabel}</label>
                   <input
                     type="email"
                     name="email"
@@ -458,22 +458,22 @@ export default function Home() {
                     onChange={handleFormChange}
                     required
                     maxLength={254}
-                    className={`w-full px-0 py-3 sm:py-3.5 border-0 border-b focus:ring-0 text-base sm:text-lg transition-colors bg-transparent ${
+                    className={`w-full h-12 px-4 border rounded-lg focus:ring-2 focus:ring-gray-900 focus:ring-offset-1 text-base transition-colors bg-white ${
                       formErrors.email ? 'border-red-500' : 'border-gray-200 focus:border-gray-900'
                     }`}
                     placeholder={t.contactSection.emailPlaceholder}
                   />
-                  {formErrors.email && <p className="text-red-500 text-xs mt-1">{formErrors.email}</p>}
+                  {formErrors.email && <p className="text-red-500 text-sm mt-1.5">{formErrors.email}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-2 sm:mb-3">{t.contactSection.projectTypeLabel}</label>
+                  <label className="block text-sm font-medium text-gray-600 mb-2">{t.contactSection.projectTypeLabel}</label>
                   <select
                     name="project_type"
                     value={formData.project_type}
                     onChange={handleFormChange}
                     required
-                    className="w-full px-0 py-3 sm:py-3.5 border-0 border-b border-gray-200 focus:border-gray-900 focus:ring-0 text-base sm:text-lg bg-transparent transition-colors"
+                    className="w-full h-12 px-4 border border-gray-200 rounded-lg focus:border-gray-900 focus:ring-2 focus:ring-gray-900 focus:ring-offset-1 text-base bg-white transition-colors"
                   >
                     <option value="turbine_installation">{t.contactSection.option1}</option>
                     <option value="assembly">{t.contactSection.option2}</option>
@@ -483,7 +483,7 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <label className="block text-xs sm:text-sm uppercase tracking-wide text-gray-400 mb-2 sm:mb-3">{t.contactSection.messageLabel}</label>
+                  <label className="block text-sm font-medium text-gray-600 mb-2">{t.contactSection.messageLabel}</label>
                   <textarea
                     name="message"
                     value={formData.message}
@@ -491,12 +491,12 @@ export default function Home() {
                     required
                     rows={4}
                     maxLength={5000}
-                    className={`w-full px-0 py-3 sm:py-3.5 border-0 border-b focus:ring-0 text-base sm:text-lg resize-none transition-colors bg-transparent ${
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gray-900 focus:ring-offset-1 text-base resize-none transition-colors bg-white ${
                       formErrors.message ? 'border-red-500' : 'border-gray-200 focus:border-gray-900'
                     }`}
                     placeholder={t.contactSection.messagePlaceholder}
                   ></textarea>
-                  {formErrors.message && <p className="text-red-500 text-xs mt-1">{formErrors.message}</p>}
+                  {formErrors.message && <p className="text-red-500 text-sm mt-1.5">{formErrors.message}</p>}
                 </div>
 
                 <button
