@@ -50,11 +50,12 @@ const Navbar = () => {
   ];
 
   return (
+    <>
     <motion.nav
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 overflow-hidden ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? 'bg-gradient-to-r from-[#1F5EFF]/90 to-[#0047E1]/90 backdrop-blur-lg shadow-lg'
           : 'bg-gradient-to-r from-[#1F5EFF] to-[#0047E1]'
@@ -208,115 +209,116 @@ const Navbar = () => {
           </motion.button>
         </div>
       </div>
+    </motion.nav>
 
-      {/* Full-Screen Mobile Menu */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="lg:hidden fixed inset-0 top-16 bg-gradient-to-b from-[#1F5EFF] to-[#0047E1] z-40 overflow-y-auto"
-          >
-            <div className="flex flex-col min-h-full px-6 py-8">
-              {/* Navigation Links - Centered */}
-              <nav className="flex-1 flex flex-col justify-center space-y-2">
-                {navLinks.map((link, index) => (
-                  link.isPage ? (
-                    <motion.div
-                      key={link.name}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.05 }}
-                    >
-                      <Link
-                        href={link.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="block text-white text-2xl font-light tracking-wide py-4 text-center hover:bg-white/10 active:bg-white/20 transition-all duration-200 rounded-xl"
-                      >
-                        {link.name}
-                      </Link>
-                    </motion.div>
-                  ) : (
-                    <motion.a
-                      key={link.name}
+    {/* Full-Screen Mobile Menu - Outside nav to prevent clipping */}
+    <AnimatePresence>
+      {isMobileMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="lg:hidden fixed inset-0 top-16 bg-gradient-to-b from-[#1F5EFF] to-[#0047E1] z-[100] overflow-y-auto"
+        >
+          <div className="flex flex-col min-h-full px-6 py-8">
+            {/* Navigation Links - Centered */}
+            <nav className="flex-1 flex flex-col justify-center space-y-2">
+              {navLinks.map((link, index) => (
+                link.isPage ? (
+                  <motion.div
+                    key={link.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                  >
+                    <Link
                       href={link.href}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.05 }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setIsMobileMenuOpen(false);
-                        const targetId = link.href.replace('#', '');
-                        setTimeout(() => {
-                          document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
-                        }, 300);
-                      }}
+                      onClick={() => setIsMobileMenuOpen(false)}
                       className="block text-white text-2xl font-light tracking-wide py-4 text-center hover:bg-white/10 active:bg-white/20 transition-all duration-200 rounded-xl"
                     >
                       {link.name}
-                    </motion.a>
-                  )
-                ))}
-              </nav>
-
-              {/* Bottom Actions */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.4 }}
-                className="pt-8 pb-4 space-y-3"
-              >
-                {/* Dark Mode & Language Row */}
-                <div className="flex gap-3">
-                  {/* Dark Mode Toggle */}
-                  <button
-                    onClick={toggleDarkMode}
-                    className="flex-1 h-14 flex items-center justify-center gap-2 text-white font-medium text-base tracking-wide border-2 border-white/40 rounded-xl hover:bg-white/10 active:bg-white/20 transition-all duration-200"
+                    </Link>
+                  </motion.div>
+                ) : (
+                  <motion.a
+                    key={link.name}
+                    href={link.href}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsMobileMenuOpen(false);
+                      const targetId = link.href.replace('#', '');
+                      setTimeout(() => {
+                        document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+                      }, 300);
+                    }}
+                    className="block text-white text-2xl font-light tracking-wide py-4 text-center hover:bg-white/10 active:bg-white/20 transition-all duration-200 rounded-xl"
                   >
-                    {isDark ? (
-                      <>
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                        Light
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                        </svg>
-                        Dark
-                      </>
-                    )}
-                  </button>
+                    {link.name}
+                  </motion.a>
+                )
+              ))}
+            </nav>
 
-                  {/* Language Toggle */}
-                  <button
-                    onClick={toggleLanguage}
-                    className="flex-1 h-14 text-white font-medium text-base tracking-wide border-2 border-white/40 rounded-xl hover:bg-white/10 active:bg-white/20 transition-all duration-200"
-                  >
-                    {language === 'en' ? 'SQ' : 'EN'}
-                  </button>
-                </div>
-
-                {/* CTA Button */}
+            {/* Bottom Actions */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.4 }}
+              className="pt-8 pb-4 space-y-3"
+            >
+              {/* Dark Mode & Language Row */}
+              <div className="flex gap-3">
+                {/* Dark Mode Toggle */}
                 <button
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="w-full h-14 text-[#1F5EFF] font-semibold text-base tracking-wide bg-white rounded-xl hover:bg-gray-100 active:bg-gray-200 transition-all duration-200"
+                  onClick={toggleDarkMode}
+                  className="flex-1 h-14 flex items-center justify-center gap-2 text-white font-medium text-base tracking-wide border-2 border-white/40 rounded-xl hover:bg-white/10 active:bg-white/20 transition-all duration-200"
                 >
-                  {t.nav.requestProposal}
+                  {isDark ? (
+                    <>
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                      Light
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                      </svg>
+                      Dark
+                    </>
+                  )}
                 </button>
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.nav>
+
+                {/* Language Toggle */}
+                <button
+                  onClick={toggleLanguage}
+                  className="flex-1 h-14 text-white font-medium text-base tracking-wide border-2 border-white/40 rounded-xl hover:bg-white/10 active:bg-white/20 transition-all duration-200"
+                >
+                  {language === 'en' ? 'SQ' : 'EN'}
+                </button>
+              </div>
+
+              {/* CTA Button */}
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="w-full h-14 text-[#1F5EFF] font-semibold text-base tracking-wide bg-white rounded-xl hover:bg-gray-100 active:bg-gray-200 transition-all duration-200"
+              >
+                {t.nav.requestProposal}
+              </button>
+            </motion.div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+    </>
   );
 };
 
