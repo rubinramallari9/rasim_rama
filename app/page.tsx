@@ -478,11 +478,11 @@ export default function Home() {
               <div className="grid sm:grid-cols-3 lg:grid-cols-1 gap-6 sm:gap-4 lg:gap-6">
                 <div>
                   <p className="text-sm font-medium text-gray-500 dark:text-slate-500 mb-1">{t.contactSection.email}</p>
-                  <p className="text-base sm:text-lg text-gray-900 dark:text-white">info@ramarasim.com</p>
+                  <p className="text-base sm:text-lg text-gray-900 dark:text-white">ramarasim@yahoo.com</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500 dark:text-slate-500 mb-1">{t.contactSection.phone}</p>
-                  <p className="text-base sm:text-lg text-gray-900 dark:text-white">+355 69 XXX XXXX</p>
+                  <p className="text-base sm:text-lg text-gray-900 dark:text-white">+355 68 209 2016</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500 dark:text-slate-500 mb-1">{t.contactSection.headquarters}</p>

@@ -195,7 +195,7 @@ const organizationSchema = {
     {
       "@type": "ContactPoint",
       contactType: "customer service",
-      email: "info@ramarasim.com",
+      email: "ramarasim@yahoo.com",
       availableLanguage: ["English", "Albanian", "Italian", "German", "Greek", "Bulgarian"],
       areaServed: ["AL", "IT", "DE", "US", "XK", "BG", "GR"],
     },
@@ -227,8 +227,8 @@ const localBusinessSchema = {
   name: "Rasim Rama Hydropower Engineering",
   image: `${siteUrl}/rasimramalogo.png`,
   url: siteUrl,
-  telephone: "+355 69 XXX XXXX",
-  email: "info@ramarasim.com",
+  telephone: "+355 68 209 2016",
+  email: "ramarasim@yahoo.com",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Tirana",
